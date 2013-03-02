@@ -391,6 +391,7 @@ public void testCPpropia_simple(){
                 int maxLength = Math.max(igual.length, result.size());
                 System.out.println("Diferencias en el caso " + origen + " SN: " + nivel_origen + " -> " + destino + " SN: " + nivel_destino + ":");
                 System.out.println("Comparando caminos: ");
+                System.out.println("Oficial -> Propio");
                 for (int i = 0; i < maxLength; i++) {
                     System.out.print((i < igual.length ? igual[i] : "") + " -> ");
                     if (i < result.size()) {

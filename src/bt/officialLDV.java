@@ -31,7 +31,7 @@ public class officialLDV {
             
             //Ejecutar el programa
             //String command = "cmd /c \"C:\\Users\\Víctor\\Documents\\NetBeansProjects\\BT\\LDVyC.exe\" " + ruta_mapa + " " +columna_origen+fila_origen+" "+nivel_origen+" "+columna_destino+fila_destino+" "+nivel_destino;
-            String command = "\"C:\\Users\\Víctor\\Documents\\NetBeansProjects\\BT\\LDVyC.exe\" " + ruta_mapa + " " +columna_origen+fila_origen+" "+nivel_origen+" "+columna_destino+fila_destino+" "+nivel_destino;
+            String command = "\"C:\\Users\\Victor\\Documents\\NetBeansProjects\\BT\\LDVyC.exe\" " + ruta_mapa + " " +columna_origen+fila_origen+" "+nivel_origen+" "+columna_destino+fila_destino+" "+nivel_destino;
             //System.out.println("ejecutando: "+command);
             Process p = Runtime.getRuntime().exec(command);
             
