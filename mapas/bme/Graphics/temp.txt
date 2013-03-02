@@ -1,0 +1,107 @@
+#+=-=-=-=-=-=-=-=-=-=-=-=+
+#| BME Default Tile Set  |
+#+=-=-=-=-=-=-=-=-=-=-=-=+
+#
+#Author
+#   Jake Staines
+#Date
+#   12th July, 1998
+#Name
+#   Standard Tileset
+#Description
+#   Set of basic tiles, green grass, trees, etc.
+
+
+#
+#Ground Defines
+#
+
+#Index 0
+[GROUND]
+Ground
+Grass
+
+#Index 1
+[GROUND]
+Concrete
+Concrete
+
+#Index 2
+[GROUND]
+Water
+Water
+
+#Index 0
+[FEATURE]
+Rubble
+Rubble
+
+#Index 1
+[FEATURE]
+LWoods
+Light Woods
+
+#Index 2
+[FEATURE]
+HWoods
+Heavy Woods
+
+#Index 3
+[FEATURE]
+L_Build
+Light Building
+
+#Index 4
+[FEATURE]
+M_Build
+Medium Building
+
+#Index 5
+[FEATURE]
+H_Build
+Heavy Building
+
+#Index 6
+[FEATURE]
+R_Build
+Reinforced Building
+
+#Index 0
+[ZONE]
+-
+ground
+Ground
+0
+0
+2
+2
+
+#Index 1
+[ZONE]
+concedge
+concrete
+Concrete
+1
+1
+2
+3
+
+#Index 0
+[HILL]
+hills
+Regular Hills
+
+#Index 1
+[HILL]
+conchill
+Concrete Hills
+
+#Index 0
+[ROAD]
+roads
+Road
+
+#Index 1
+[ROAD]
+rivers
+River

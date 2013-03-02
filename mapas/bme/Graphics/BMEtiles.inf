@@ -1,0 +1,143 @@
+#+=-=-=-=-=-=-=-=-=-=-=-=+
+#| BME Default Tile Set  |
+#+=-=-=-=-=-=-=-=-=-=-=-=+
+#
+#Author
+#   Jake Staines
+#Date
+#   12th July, 1998
+#Name
+#   Standard Tileset
+#Description
+#   Set of basic tiles, green grass, trees, etc.
+
+
+#
+#Ground Defines
+#
+
+#Index 0
+[GROUND]
+Ground
+Grass
+
+#Index 1
+[GROUND]
+Concrete
+Concrete
+
+#Index 2
+[GROUND]
+Water
+Water
+
+#index 3
+[GROUND]
+Swamp
+Swamp
+
+#
+#Feature Defines
+# 
+
+#Index 0
+[FEATURE]
+Rubble
+Rubble
+
+#Index 1
+[FEATURE]
+LWoods
+Light Woods
+
+#Index 2
+[FEATURE]
+HWoods
+Heavy Woods
+
+#Index 3
+[FEATURE]
+L_Build
+Light Building
+
+#Index 4
+[FEATURE]
+M_Build
+Medium Building
+
+#Index 5
+[FEATURE]
+H_Build
+Heavy Building
+
+#Index 6
+[FEATURE]
+R_Build
+Reinforced Building
+
+#index 7
+[FEATURE]
+Bunker1
+Hexagonal Bunker
+
+#
+#Zone Defines
+#
+
+#Index 0
+[ZONE]
+-
+Grass
+Ground
+0
+2
+0
+1
+
+#Index 1
+[ZONE]
+concedge
+Concrete
+Concrete
+1
+1
+1
+0
+
+#Index 2
+[ZONE]
+swmpedge
+Swamp
+Swamp
+3
+3
+0
+0
+
+#
+#Hill Defines
+#
+
+#Index 0
+[HILL]
+hills
+Regular Hills
+
+#Index 1
+[HILL]
+conchill
+Concrete Hills
+
+#
+#Road Defines
+#
+
+#Index 0
+[ROAD]
+rivers
+River
+
+#Index 1
+[ROAD]
+roads
+Road

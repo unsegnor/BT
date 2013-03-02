@@ -1,0 +1,16 @@
+			BME Changes Log
+			===============
+
+V0.6
+====
+
+Ability to select your tileset (by directory)
+FASA Standard size added
+Better Save Files implemented - Two open modes - this Version 
+	only, so people can convert their map files!
+Mouse Paint feature - clicking on a hex once fills just that hex, but 
+dragging the mouse across several hexes 'paints' all of them with
+whatever you have active.
+Show Position feature - highlights the current Hex.
+Printing! At Last!!
+

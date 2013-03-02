@@ -1,0 +1,42 @@
+WARNING!
+========
+
+BME V0.11.5 is the last version of BME I will be doing for a while.
+
+There are many reasons for this, not least being my insistence on actually
+finishing Final Fantasy 8 at some time and the amount of work I have to do
+for exams and stuff. It's taken me five weeks longer than I expected to get
+the time to put all this together in one place and compiled. 
+
+This does *NOT* mean I'm giving up on BME. If you're reading this in 2004, 
+and still there's been no new version, then it might do... but I doubt I'll
+drop BME just yet. I'm still too overwhelmed at how many people actually use it
+to stop developing it just yet. (Or at least, how many people *claim* to use 
+it... and unless it's a conspiracy to prevent me from getting through 
+university, I see no reason they should lie...:-)
+
+However, due to external concerns, I'm going to have to, um... take a 
+sabbatical. I also don't want to get burnt out programming, as currently it's
+stil something I do for fun and I have this funny idea that if I felt too much
+under pressure to get the next version of whatever out, it would stop being 
+so fun.
+
+
+Still, one of the other reasons you won't see any BME for a while is because I'm
+starting *another* rewrite. I'm going to do it properly this time - the last
+rewrite actually nicked large sections of code from previous versions, and
+that's where half my current problems are coming from. When I first started BME
+I knew, on the grand scheme of things, practically nothing about programming
+under windows. I now know quite a bit about programming under windows, (most of
+which I learned whilst writing BME...:-) and I want to do it right this time.
+I still have high ambitions for BME, (You'll have to wait a bit to find out
+what some of the higher ones are...:-) and the current framework just won't 
+support them. However - if I'm going to do it right this time, and I am, I need
+to know from the get go what I'm going to include, and what I'm not. 
+As a basic guideline, everything that's *currently* in BME should stay, and everything I've decidely taken *out* of BME shall stay out. (Mouse painting...)
+Anyway - send your new feature ideas in *now*. I won't implement *any* major
+features that I don't have written down before I start. (This was another 
+mistake I made last time...)
+
+
+Jake

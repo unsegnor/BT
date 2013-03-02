@@ -1,0 +1,88 @@
+Texto	"defmechSBT"
+Texto	Nombre
+Texto	Modelo
+Entero	Toneladas
+Entero	Potencia
+Entero	Número de Radiadores Internos
+Entero	Número de Radiadores
+Lógico	¿Tiene MASC?
+Lógico	¿DACMTD?
+Lógico	¿DACMTI?
+Lógico	¿DACMTC?
+Entero	Máximo Calor Generado
+Lógico	¿Con Brazos?
+Lógico	¿Con Hombro Izquierdo?
+Lógico	¿Con Brazo Izquierdo?
+Lógico	¿Con Antebrazo Izquierdo?
+Lógico	¿Con Mano Izquierda?
+Lógico	¿Con Hombro Derecho?
+Lógico	¿Con Brazo Derecho?
+Lógico	¿Con Antebrazo Derecho?
+Lógico	¿Con Mano Derecha?
+Entero	Blindaje brazo izquierdo
+Entero	Blindaje torso izquierdo
+Entero	Blindaje pierna izquierda
+Entero	Blindaje pierna derecha
+Entero	Blindaje torso derecho
+Entero	Blindaje brazo derecho
+Entero	Blindaje torso central
+Entero	Blindaje cabeza
+Entero	Blindaje parte de atrás del torso izquierdo
+Entero	Blindaje parte de atrás del torso derecho
+Entero	Blindaje parte de atrás del torso central
+Entero	Puntos estructura interna brazo izquierdo
+Entero	Puntos estructura interna torso izquierdo
+Entero	Puntos estructura interna pierna izquierda
+Entero	Puntos estructura interna pierna derecha
+Entero	Puntos estructura interna torso derecho
+Entero	Puntos estructura interna brazo derecho
+Entero	Puntos estructura interna torso central
+Entero	Puntos estructura interna cabeza
+Entero	Número de componentes equipados
+Para cada componente
+
+	Entero	Código
+	Texto	Nombre
+	Texto	Clase (NADA,ARMA,MUNICION,EQUIPO,ACTUADOR,ARMADURA,ARMAFISICA)
+	Lógico	¿El arma está montada en la parte trasera?
+	Entero	Localizacion del ítem (0=BI,1=TI,2=PI,3=PD,4=TD,5=BD,6=TC,7=CAB,8=TIa,9=TDa,10=TCa) 
+	Entero	Localizacion secundaria del item (0=BI,1=TI,2=PI,3=PD,4=TD,5=BD,6=TC,7=CAB,8=TIa,9=TDa,10=TCa)
+	Texto	Tipo de Arma  (Nada, Energía, Balística, Misiles)
+	Entero	Calor
+	Entero	Daño
+	Entero	Disparos por Turno
+	Entero	Distancia mínima
+	Entero	Distancia Corta
+	Entero	Distancia Media
+	Entero	Distancia Larga
+	Lógico	¿Equipo operativo?
+	Entero	Código del Arma para la que se usa la munición (En caso de que sea munición)
+	Entero	Cantidad (En caso de que sea munición)
+	Lógico	¿Munición Especial? (En caso de que sea munición)
+	Entero	Modificador de Disparo (En caso de que sea munición)
+
+Entero	Número de armas
+Entero	Número de actuadores
+Para cada actuador
+
+	Entero	Código
+	Texto	Nombre
+	Entero	Localizacion del ítem (0=BI,1=TI,2=PI,3=PD,4=TD,5=BD,6=TC,7=CAB,8=TIa,9=TDa,10=TCa) 
+	Lógico	¿Operativo?
+	Entero	Número de impactos
+
+Para cada localización (0=BI,1=TI,2=PI,3=PD,4=TD,5=BD,6=TC,7=CAB)
+	Entero	Número de slots ocupados
+	Para cada slot ocupado
+		Texto 	Clase
+		Entero	Cantidad (sólo para municiones)
+		Entero	Código
+		Texto	Nombre
+		Entero	Índice de componente (en qué posición aparece en la lista de componentes)
+		Entero	Índice de actuador (en qué posición aparece en la lista de actuadores)
+		Entero	Daño de la munición en caso de crítico (solo aplicable a munición)
+
+Entero	Puntos de movimiento andando
+Entero	Puntos de movimiento corriendo
+Entero	Puntos de movimiento saltando
+Entero	Tipo de radiadores (0=Simple,1=Doble)

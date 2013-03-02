@@ -1,0 +1,15 @@
+BME Features
+============
+
+All Major BTech map components:
+	Ground levels from -9 to 9,
+	Light and Heavy Woods,
+	Rubble,
+	Concrete,
+	Roads,
+	Rivers,
+	Light, Medium, heavy and Reinforced Buildings
+Hex Numbering
+Level Tags that can be turned on or off to please
+Export to BMP function
+Support for multiple Tilesets

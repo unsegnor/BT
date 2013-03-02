@@ -1,0 +1,193 @@
+FEATURE HISTORY 
+ A Reverse chronology of features added to BME over the ages.
+ Most likely completely wrong, but who cares, eh? 
+
+Anyway, if there's anything drastically out here that you can't bear not to
+be corrected, drop me a line. I'll see what I can do.
+
+ V0.11.5 - 28th May, 2000
+-------------------------
+
+This is most likely the last BME for a long time. The main reason for this
+is that I'm starting to come up (again) against barriers I created for myself 
+by doing something one particular way a while back. As it is, BME is a perfectly
+useable program, but also the process of adding some of the new features people
+are asking for would mean re-writing much of the base stuff anyway, and I did
+it so long ago that it would be easier to start from scratch. Plus, people are
+starting to ask for the source... and whilst I don't mind in principle giving 
+away my sourcecode, I'm not giving away some if this stuff just 'cause it's so
+embarrassing...
+
+Anyway, added this version was:
+
+* Rudimentary JPEG support
+
+* Went through and realigned the readmes to 80 characters instead of the 96
+	I for some reason used last time I did this... :-)
+
+
+ V0.11 - ? March, 2000
+----------------------
+
+ OK, this is where I sat down over the *Easter* holidays, and actually *did*
+some coherent work on BME... ;-)
+
+* Text shadow colour control and toggle. You can now change the colour of the 
+shadow and determine if you want it painted at all.
+
+ V0.10 - 17th December, 1999
+----------------------------
+ Ok, this is where I sat down during the Christmas Holidays and actually *did* 
+some coherent work on BME... ;-) 
+
+* Printing. At Last. And it Actually Works!!! <sounds of nervous breakdown>
+* Workspace resizing. At Last. And it Actually Works!!! <maniacal giggling from 
+	Programmer's chair>
+* Went through the History and Readme files and actually put line breaks in so I 
+	can read it on the UNIX boxes at Uni...
+
+*** WARNING ***
+I *do* know there are some (minor) things that I promised to put in this next 
+release, and I also know I haven't done them. Um, sorry. They will get done, but 
+I was too engrossed in Printing to worry about them just yet. 
+Also, I am perfectly aware that currently, if you try and print a map bigger 
+than one sheet of paper, it doesn't use any more sheets, so you only get the top 
+left corner of your map. This will be fixed, but right now, I can't be bothered. 
+Wait 'till the next release.
+	<NOTE - still not fixed - printer support is stil lfairly buggy :( >
+
+ V0.9.4 - 20th September, 1999
+------------------------------
+ Did this exist? I'm not sure. Delphi's Version Tracker tells me it did. I can't 
+remember. If anyone can tell me what features went into this version, if I ever 
+got around to releasing it, please do.
+
+* This could have been the minor version from whence the ground could be 
+raised/lowered between the ranges of 50 and -50. If *that*'s not enough for 
+anybody, well...
+
+ V0.9.3 - 13th September, 1999
+------------------------------
+ Essentially a big bug-fixing operation. Bugs fixed this version:
+
+* The memory leak when the map was redrawn - this hadn't actually been *fixed* 
+as such last time, I discovered - only delayed. This time it should be gone for 
+good.
+* The problem with Hex Numbering/Exporting big maps - fixed at the same time as 
+the above.
+* The bug whereby if a map larger than A4 were loaded, you would only be able to 
+display the top left corner of it unless you had previously had open a map of 
+that same size.
+
+ V0.9.2 - Approx. 5th August, 1999
+--------------------------------- 
+ About half a day after I uploaded V0.9.1, I was notified that choosing 
+'Tileset' from the Map menu didn't do anything but lose your map... V0.9.2 is a 
+fix for that.
+
+ V0.9.1 - 24th May, 1999 
+------------------------
+ This is a bug-fix release from V0.9, mainly dealing with the memory allocation 
+problems that so many people noticed with the tileset handling and the memory 
+leak on the map refresh... 
+Also, Command Line parameters have been added, allowing you to choose a tileset, 
+specify a tileset or specify a map file to load!
+
+ V0.9 - 13th May, 1999 
+----------------------
+Water level, etc.... Oh, and Custom Tilesets. Completely Customisable tilesets.
+And a cool new toolbar. (A Coolbar, none the less... ;-)
+
+ V0.8 
+-----
+ OK. This gets a little fiddly. Essentially, this is a complete re-write of all 
+the code. Except, of course, all the code isn't done yet, so there are a couple 
+of things that were in previous versions that haven't appeared yet in this one. 
+Next time, my friends, next time. 
+
+ V0.66 / V0.7 
+-------------
+ A disaster! Released with serious bugs that I really didn't have time to fix. 
+Because I was working on the re-write! It was essentially meant to be bug fixes 
+from 0.65, but it introduced a couple of bad mistakes, and I simply gave up on 
+the whole thing. If anybody is using this version, quickly download a different 
+one - I'm about as happy with 0.66/0.7 as I am with 0.1! 
+
+ V0.65 - Sometime around September, 98 
+--------------------------------------
+ This was, up until very recently, the version of choice. I took out Hex 
+Painting, since it didn't do much I could see was useful but slowed down the 
+program one hell of a lot, added a couple of minor things - I think a couple 
+more options.  
+
+ V0.6 - 29th July, 98 
+---------------------
+ Finally, BME can print!! 	
+	<Note - this has since been taken out.. sorry>
+	<Note - this has since been put back in... <grin>>
+
+(Use 150 dpi or less, and choose appropriate graphics dithering options!)
+Almost more importantly, you can now select the tileset you want to use from 
+inside BME, so you don't have to rename or copy files or directories any more 
+(If any of you were actually using custom tilesets in the first place - see 
+downloads section)
+Lots more options are available from inside BME, allowing you to toggle many 
+features to your liking.
+There's a floating Hex Highlighter to show you exactly which hex you are about 
+to change.
+	<Note - this *has* since been taken out. It was silly.>
+Finally you can now paint hexes in a continuous mouse-stroke instead of 
+repeatedly clicking.
+	<And this has too. As Devillin said... 'Mouse Painting is EVIL!!!'>
+
+ V0.5 - 4th July, 98 
+--------------------
+Hex Numbering is Here! 
+Also, ground can be raised/lowered between -9 and 9, instead of -4 and 4! 
+What's more, I've re-jigged the menus!
+Even Better than that, you can now specify exactly where roads and rivers leave 
+your map!
+	<Note - this never got rewritten properly. It's due in the
+	 *next* rewrite. :-) >
+Finally, there are some options you can change, although I haven't put in INI 
+file support yet!  
+	<Note - ...and never will. Seeing as BMe is now a 32-bit only app 
+	 *anyway*, I'll be using the registry.>
+
+ V0.4 - 1st May, 98 
+-------------------
+ Aesthetically, the ugly buttons down the side have all been replaced by nice 
+icons, and all have ToolTips. I haven't bothered placing the icons in much of an 
+order so far - it isn't finished, so why waste my time making it look nice when 
+I could be adding functionality? 
+Buildings and Concrete are in, but the Building Sprites aren't great - just two 
+minute jobs, unfortunately. Concrete also hasn't been finished, I intend to add 
+edges similar to the ones on the Citytech maps.
+
+A couple of bugs have been eliminated, including the one where when you load a 
+large map it doesn't let you move to the whole map, just the top left section.
+
+There's a new menu, Maps, where export and nuke have been moved to. I've finally 
+got rid of that 'Refresh all' button - I only ever needed it in the VB version, 
+and that got wiped ages ago! This is also where stuff like the options window 
+will be accessed from when it's been implemented. (Start telling me what things 
+you'd like to have as options!) 
+
+ V0.3 - 4th April, 98 
+---------------------
+ Added roads and rivers, and fixed several bugs, most notably the one where an 
+export only caught the top left section of the map. 
+
+ V0.2 - 28th March, 98 
+----------------------
+ First version written in Delphi - Nothing major new but much, much faster! 
+
+ V0.1 - A long time ago 
+-----------------------
+ Original beta release, written in Visual Basic. Slow, useless and I don't think it even had export. I can't remember, and I've deleted it now.
+
+If this is the only version you have, download a new one! It now takes up less 
+space, you don't need a runtime library and there are lots more features. First, 
+however, send me a copy. I want to find one so I can put it up on the BME 
+homepage and point people to it when they complain about lack of 
+functionality...
