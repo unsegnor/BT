@@ -44,9 +44,16 @@ public class Receptor implements Runnable {
                     //Separarla por comas
                     String[] parametros = primeraLinea.split(",");
                     
+                    if(parametros.length == 3){
+                    
                     //Crear y lanzar una jugada con los parámetros
                     new Thread(new Jugada(parametros[0], parametros[1], parametros[2])).start();
                     
+                    }else{
+                        
+                        System.err.println("Numero de parametros de entrada incorrectos en la llamada");
+                        
+                    }
                     //Eliminar el archivo
                     bf.close();
                     fr.close();
