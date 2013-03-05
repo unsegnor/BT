@@ -25,7 +25,7 @@ public class MovAgente extends Agente {
 
     @Override
     protected Collection<? extends AccionResultado> getAcciones(State estado) {
-        ArrayList<AccionResultado> respuesta = new ArrayList<>();
+        ArrayList<AccionResultado> respuesta = new ArrayList<AccionResultado>();
             
         /*
          * Este va a llamar a otros tres agentes que van a devolver las acciones posibles relativas

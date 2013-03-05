@@ -35,7 +35,7 @@ public class AgenteAndar extends Agente {
     protected Collection<? extends AccionResultado> getAcciones(State estado) {
         //Este agente va a comprobar todos aquellos lugares donde puede llegar andando y cuáles serían los
         //posibles resultados y su probabilidad
-        ArrayList<AccionResultado> respuesta = new ArrayList<>();
+        ArrayList<AccionResultado> respuesta = new ArrayList<AccionResultado>();
         
         //Necesitamos conocer su posición y el mapa
         Mapa mapa = estado.getMapa();
@@ -60,7 +60,7 @@ public class AgenteAndar extends Agente {
         //crear y definir la nueva ruta
         Ruta rutaIzquierda = new Ruta();
         //Copiar los pasos de la ruta anterior
-        ArrayList<Paso> pasos = new ArrayList<>(ruta.getPasos());
+        ArrayList<Paso> pasos = new ArrayList<Paso>(ruta.getPasos());
         //Crear y definir el nuevo paso
         Paso p = new Paso();
         p.setTipoDePaso(tiposDePaso.Izquierda);

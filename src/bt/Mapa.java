@@ -354,7 +354,7 @@ class Mapa {
         //en función de cuál obstaculice más la LDV y se añade a la lista directamente pasando a ser el siguiente
         //el hexágono en el que deja de darse esa situación de ambigüedad. Ya que ninguno de los anteriores puede ser
         //el hexágono de destino.
-        ArrayList<ArrayList<Phexagono> > lista = new ArrayList<>();
+        ArrayList<ArrayList<Phexagono> > lista = new ArrayList<ArrayList<Phexagono> >();
         
         ArrayList<Phexagono> nuevoarray; //Array que utilizamos para añadir a la lista
         
@@ -428,7 +428,7 @@ class Mapa {
         //Mientras no sea el último
         while(actual.getColumna() != destino.getColumna() || actual.getFila() != destino.getFila()){
             //Añadir el actual a la lista
-            nuevoarray = new ArrayList<>();
+            nuevoarray = new ArrayList<Phexagono>();
             nuevoarray.add(actual);
             lista.add(nuevoarray);
             
@@ -537,7 +537,7 @@ class Mapa {
                                 lista.add(cara6);
                             }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if(valido(cara1)) nuevoarray.add(cara1);
                             if(valido(cara6)) nuevoarray.add(cara6);
                             lista.add(nuevoarray);
@@ -574,7 +574,7 @@ class Mapa {
                                 lista.add(cara4);
                             }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if(valido(cara3)) nuevoarray.add(cara3);
                             if(valido(cara4)) nuevoarray.add(cara4);
                             lista.add(nuevoarray);
@@ -611,7 +611,7 @@ class Mapa {
                                 lista.add(cara2);
                             }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if(valido(cara1)) nuevoarray.add(cara1);
                             if(valido(cara2)) nuevoarray.add(cara2);
                             lista.add(nuevoarray);
@@ -648,7 +648,7 @@ class Mapa {
                                 lista.add(cara5);
                             }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if(valido(cara4)) nuevoarray.add(cara4);
                             if(valido(cara5)) nuevoarray.add(cara5);
                             lista.add(nuevoarray);
@@ -685,7 +685,7 @@ class Mapa {
                                 lista.add(cara3);
                             }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if(valido(cara2)) nuevoarray.add(cara2);
                             if(valido(cara3)) nuevoarray.add(cara3);
                             lista.add(nuevoarray);
@@ -722,7 +722,7 @@ class Mapa {
                                 lista.add(cara6);
                             }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if(valido(cara5)) nuevoarray.add(cara5);
                             if(valido(cara6)) nuevoarray.add(cara6);
                             lista.add(nuevoarray);
@@ -741,7 +741,7 @@ class Mapa {
             actual = siguiente;
             caraentrada = carasiguiente;
         }
-        nuevoarray = new ArrayList<>();
+        nuevoarray = new ArrayList<Phexagono>();
         nuevoarray.add(destino);
         lista.add(nuevoarray);
         //lista.add(destino);

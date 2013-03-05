@@ -22,7 +22,7 @@ public class ACorrer extends Agente {
 
     @Override
     protected Collection<? extends AccionResultado> getAcciones(State estado) {
-        ArrayList<AccionResultado> respuesta = new ArrayList<>();
+        ArrayList<AccionResultado> respuesta = new ArrayList<AccionResultado>();
 
         //Correr
         Movimiento aI = new Movimiento();

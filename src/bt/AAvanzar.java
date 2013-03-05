@@ -24,7 +24,7 @@ public class AAvanzar extends Agente {
 
     @Override
     protected Collection<? extends AccionResultado> getAcciones(State estado) {
-        ArrayList<AccionResultado> respuesta = new ArrayList<>();
+        ArrayList<AccionResultado> respuesta = new ArrayList<AccionResultado>();
 
         //Datos necesarios
         Mapa mapa = estado.getMapa();

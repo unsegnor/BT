@@ -22,7 +22,7 @@ public class AAndar extends Agente {
 
     @Override
     protected Collection<? extends AccionResultado> getAcciones(State estado) {
-        ArrayList<AccionResultado> respuesta = new ArrayList<>();
+        ArrayList<AccionResultado> respuesta = new ArrayList<AccionResultado>();
 
         //Andar
         Movimiento aI = new Movimiento();
