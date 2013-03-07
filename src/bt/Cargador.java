@@ -362,6 +362,8 @@ public class Cargador {
         }
         return ddm;
     }
+    
+    // TODO Delete or move to the right class
     public static void escribirAccion(int nJugador, Accion accion) {
 
         //Crear archivo
