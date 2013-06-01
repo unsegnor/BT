@@ -844,4 +844,36 @@ class Mapa {
         
         return costeTotal;
     }
+
+    /**
+     * Devuelve las casillas que se encuentran dentro de un radio radio de la casilla posicion
+     * @param posicion
+     * @param radio
+     * @return 
+     */
+    ArrayList<Phexagono> cercanas(Phexagono posicion, int radio) {
+        ArrayList<Phexagono> respuesta = new ArrayList<Phexagono>();
+        
+        //TODO arreglar, de momento voy a simplficar el método para obtener rápido un conjunto, pero no está bien
+        
+        //Generar todas las posiciones
+        
+        for(int i=-radio; i<=radio; i++){
+            for(int j=-radio; j<=radio; j++){
+                
+                int c = posicion.getColumna()-i;
+                int f = posicion.getFila()-j;
+                
+                //Si es una casilla válida
+                if(this.valido(c, f)){
+                    respuesta.add(new Phexagono(c,f));
+                }
+            }
+        }
+        
+        return respuesta;
+    }
+    
+    
+    
 }

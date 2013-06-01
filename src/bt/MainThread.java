@@ -17,7 +17,9 @@ public class MainThread implements Runnable{
 
     @Override
     public void run() {
+        //Mejorar constantemente la estrategia a seguir
         
+        //Debe existir una estrategia actual
     }
     
 }

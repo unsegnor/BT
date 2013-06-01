@@ -26,6 +26,6 @@ public class BT {
         System.out.print("Iniciando receptor...");
         new Thread(receptor).start();
         System.out.println("OK");
-        //new Thread(new MainThread()).start();
+        new Thread(new MainThread()).start();
     }
 }

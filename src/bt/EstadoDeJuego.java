@@ -35,5 +35,7 @@ public class EstadoDeJuego {
     //Estado de Jugadores
     EstadoDeJugador jugadores[];
     
+    //Datos de los mechs
+    DataMechs datos_mechs;
     
 }
