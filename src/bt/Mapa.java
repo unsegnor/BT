@@ -425,8 +425,8 @@ class Mapa {
         //en función de cuál obstaculice más la LDV y se añade a la lista directamente pasando a ser el siguiente
         //el hexágono en el que deja de darse esa situación de ambigüedad. Ya que ninguno de los anteriores puede ser
         //el hexágono de destino.
-        ArrayList<ArrayList<Phexagono>> lista = new ArrayList<>();
-
+        ArrayList<ArrayList<Phexagono> > lista = new ArrayList<ArrayList<Phexagono> >();
+        
         ArrayList<Phexagono> nuevoarray; //Array que utilizamos para añadir a la lista
 
         //Trazar línea entre los hexágonos
@@ -619,7 +619,7 @@ class Mapa {
         //Mientras no sea el último
         while (actual.getColumna() != destino.getColumna() || actual.getFila() != destino.getFila()) {
             //Añadir el actual a la lista
-            nuevoarray = new ArrayList<>();
+            nuevoarray = new ArrayList<Phexagono>();
             nuevoarray.add(actual);
             lista.add(nuevoarray);
 
@@ -969,7 +969,7 @@ class Mapa {
             actual = siguiente;
             caraentrada = carasiguiente;
         }
-        nuevoarray = new ArrayList<>();
+        nuevoarray = new ArrayList<Phexagono>();
         nuevoarray.add(destino);
         lista.add(nuevoarray);
         //lista.add(destino);

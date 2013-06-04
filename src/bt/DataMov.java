@@ -108,7 +108,7 @@ public class DataMov {
     //True si el BattleMech dispone de MASC operativo, va a correr y correrá usándolo.
     private boolean UsaMASC;
     
-    //Número de pasosn de los que se compone la ruta a seguir
+    //Número de pasos de los que se compone la ruta a seguir
     private int numero_de_pasos;
     
     //Conjunto de pasos

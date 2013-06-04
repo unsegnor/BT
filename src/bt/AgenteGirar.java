@@ -32,7 +32,7 @@ public class AgenteGirar extends Agente {
     @Override
     protected Collection<? extends AccionResultado> getAcciones(State estado) {
         //Este agente va a comprobar los giros que puede realizar y sus consecuencias
-        ArrayList<AccionResultado> respuesta = new ArrayList<>();
+        ArrayList<AccionResultado> respuesta = new ArrayList<AccionResultado>();
 
         //No necesitamos conocer nada del mapa
         tiposDeMovimiento tm = estado.getModalidadMovimiento();
@@ -60,7 +60,7 @@ public class AgenteGirar extends Agente {
         //crear y definir la nueva ruta
         Ruta rutaIzquierda = new Ruta();
         //Copiar los pasos de la ruta anterior
-        ArrayList<Paso> pasos = new ArrayList<>(ruta.getPasos());
+        ArrayList<Paso> pasos = new ArrayList<Paso>(ruta.getPasos());
         //Crear y definir el nuevo paso
         Paso p = new Paso();
         p.setTipoDePaso(Reglas.tiposDePaso.Izquierda);
@@ -90,7 +90,7 @@ public class AgenteGirar extends Agente {
         Resultado resultadoI = new Resultado();
         resultadoI.setEstado(estadoIzquierda);
         resultadoI.setProbabilidad(1);
-        ArrayList<Resultado> resultadosI = new ArrayList<>();
+        ArrayList<Resultado> resultadosI = new ArrayList<Resultado>();
         resultadosI.add(resultadoI);
         //Creamos la AcciónResultado
         AccionResultado arI = new AccionResultado();
@@ -111,7 +111,7 @@ public class AgenteGirar extends Agente {
         //crear y definir la nueva ruta
         Ruta rutaD = new Ruta();
         //Copiar los pasos de la ruta anterior
-        ArrayList<Paso> pasosD = new ArrayList<>(ruta.getPasos());
+        ArrayList<Paso> pasosD = new ArrayList<Paso>(ruta.getPasos());
         //Crear y definir el nuevo paso
         Paso pD = new Paso();
         pD.setTipoDePaso(Reglas.tiposDePaso.Derecha);
@@ -141,7 +141,7 @@ public class AgenteGirar extends Agente {
         Resultado resultadoD = new Resultado();
         resultadoD.setEstado(estadoD);
         resultadoD.setProbabilidad(1);
-        ArrayList<Resultado> resultadosD = new ArrayList<>();
+        ArrayList<Resultado> resultadosD = new ArrayList<Resultado>();
         resultadosD.add(resultadoD);
         //Creamos la AcciónResultado
         AccionResultado arD = new AccionResultado();

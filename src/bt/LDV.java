@@ -28,7 +28,7 @@ public class LDV {
 
     public static ResultadoLDV calcularLDV(Mapa mapa, Phexagono origen, int nivel_origen, Phexagono destino, int nivel_destino) {
         ResultadoLDV respuesta = new ResultadoLDV();
-        ArrayList<Phexagono> caminoelegido = new ArrayList<>();
+        ArrayList<Phexagono> caminoelegido = new ArrayList<Phexagono>();
         ArrayList<ArrayList<Phexagono>> intermedios = null;
         Hexagono hex_origen = mapa.casilla(origen);
         Hexagono hex_destino = mapa.casilla(destino);

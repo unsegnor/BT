@@ -20,14 +20,14 @@ public class TAI {
      *
      */
     
-    HashSet<Agente> agentes = new HashSet<>();
+    HashSet<Agente> agentes = new HashSet<Agente>();
     
     public void inscribirAgente(Agente agente){
         agentes.add(agente);
     }
     
     public AccionResultado[] accionesPosibles(State estado){
-        ArrayList<AccionResultado> respuesta = new ArrayList<>();
+        ArrayList<AccionResultado> respuesta = new ArrayList<AccionResultado>();
         
         //Consultamos a todos los agentes inscritos para que
         //añadan las acciones que ellos estipulan posibles
