@@ -106,4 +106,9 @@ class Movimiento extends Accion {
     public void setUsaMASC(boolean usaMASC) {
         this.usaMASC = usaMASC;
     }
+
+    @Override
+    Reglas.Fase getFase() {
+            return Reglas.Fase.Movimiento;
+    }
 }

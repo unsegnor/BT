@@ -19,9 +19,15 @@ public class Receptor implements Runnable {
     @Override
     public void run() {
         File f_jugada = new File("jugada");
+        File f_partida = new File("partida");
         FileReader fr;
         BufferedReader bf;
         while (!isFinalizar()) {
+            
+            if(!f_partida.exists()){
+                finalizar = true;
+            }
+            
             try {
                 //Esperar un tiempo entre comprobación y comprobación
                 Thread.currentThread().sleep(500);
@@ -30,14 +36,17 @@ public class Receptor implements Runnable {
             }
             
             //Comprobar si existe el fichero "jugada"
+            //System.out.println("Comprobando si existe jugada...");
             if (f_jugada.exists()) {
                 try {
                     
-                    //Esperar por si se está escribiendo
+                    System.out.println("Detectada jugada...");
+                    //Esperar por si se está escribiendo / borrando
                     Thread.currentThread().sleep(200);
                     
+                    System.out.println("Leyendo jugada...");
                     //Leer la primera línea
-                    fr = new FileReader("jugada");
+                    fr = new FileReader(f_jugada);
                     bf = new BufferedReader(fr);
                     String primeraLinea = bf.readLine();
                     
@@ -58,7 +67,6 @@ public class Receptor implements Runnable {
                     bf.close();
                     fr.close();
                     f_jugada.delete();
-                    
                     
                     //Esperar un tiempo antes de volver a comprobar
                     Thread.currentThread().sleep(500);

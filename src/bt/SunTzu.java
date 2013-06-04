@@ -14,10 +14,12 @@ import java.util.Collections;
  * @author Víctor
  */
 public class SunTzu {
-    private static int p_encaramiento = 1;
-    private static int p_nivel = 1;
-    private static int p_cobertura = 2;
-    private static int p_cobertura_enemigo = 2;
+
+    private static int p_encaramiento = 10;
+    private static int p_nivel = 0;
+    private static int p_cobertura = 1000;
+    private static int p_cobertura_enemigo = 1000;
+    private static double p_distancia = 100;
 
     public static Accion siguienteAccion(int jugador, Fase fase) {
 
@@ -28,7 +30,7 @@ public class SunTzu {
         //Responder en función de la fase
         Accion resultado = null;
 
-
+        System.out.println("Leido estado. Jugador " + jugador + " fase " + fase.name());
         switch (fase) {
             case Movimiento:
                 resultado = responderAMovimiento(estado);
@@ -56,7 +58,7 @@ public class SunTzu {
 
 
         //Si somos los últimos o primeros en mover debe influir en nuestra decisión
-
+        
 
 
         //Comprobar posiciones de los mechs enemigos operativos
@@ -92,32 +94,87 @@ public class SunTzu {
 
         //Evaluar todas las casillas
         for (Phexagono p : posiciones_cercanas) {
-            double bondad = evaluar(p, estado, enemigos_operativos);
-            evaluaciones.add(new Evaluacion(p, bondad));
+            //Si es distinta de la casilla de un enemigo
+            boolean valida = true;
+            for (DataMech d : enemigos_operativos) {
+                if (p.getColumna() == d.getColumna() && p.getFila() == d.getFila()) {
+                    valida = false;
+                }
+            }
+            if (valida) {
+                //Evaluar y añadir como posible
+                double bondad = evaluar(p, estado, enemigos_operativos);
+                evaluaciones.add(new Evaluacion(p, bondad));
+            }
         }
 
         //Ordenar las casillas
         Collections.sort(evaluaciones, new OrdenadorDeEvaluaciones());
-        
+
         //Buscar una ruta desde la posición actual a las mejores hasta hallar la primera
         //TODO de momento saltamos, luego hay que implementar el correr y andar
-        
+
         //Para cada posición ordenadas de mejor a peor buscar una ruta andando, corriendo o saltando
         //en el momento en que se encuentre ese será el movimiento a realizar
-        for(Evaluacion e : evaluaciones){
-            Phexagono pe = (Phexagono) e.cosa;
-            System.out.println(pe.getColumna() + "," + pe.getFila() + " -> " + e.valor);
-            
-            
-            //Comprobar si se puede llegar andando
-            //Sino comprobar si se puede llegar corriendo
-            //Sino comprobar si se puede llegar saltando
-        }
-        
 
-        
-        
-        
+        boolean adjudicado = false;
+        for (int i = 0; i < evaluaciones.size() && !adjudicado; i++) {
+
+            Evaluacion e = evaluaciones.get(i);
+            Phexagono pe = (Phexagono) e.cosa;
+            System.out.println(pe + " -> " + e.valor);
+
+
+            //Comprobar si se puede llegar andando
+            Ruta rutaAndando = PathFinder.buscaRutaAndando(estado.mapa, posicion_mech, pe, pAndar);
+            if (rutaAndando != null) {
+                //Se puede andar -> andamos
+                adjudicado = true;
+            } else {
+                //Sino comprobar si se puede llegar corriendo
+                Ruta rutaCorriendo = PathFinder.buscaRutaCorriendo(estado.mapa, posicion_mech, pe, pCorrer);
+                if (rutaCorriendo != null) {
+                    //Se puede llegar corriendo -> correr
+                    adjudicado = true;
+                } else {
+                    //Sino comprobar si se puede llegar saltando
+                    boolean rutaSaltando = PathFinder.buscaRutaSaltando(estado.mapa, posicion_mech, pe, pSaltar);
+                    if (rutaSaltando) {
+
+                        //Se puede llegar saltando -> saltar
+                        adjudicado = true;
+                        //Generamos el salto
+                        Salto salto = new Salto();
+                        salto.setTipo(Reglas.tiposDeMovimiento.Saltar);
+                        salto.setDestino(pe);
+                        salto.setUsaMASC(false);
+                        salto.setRuta(null);
+
+                        //Seleccionar el lado que encare al enemigo
+                        //TODO si hay varios enemigos decidir a cuál nos encaramos
+                        //TODO también hay que encarar sólo si hay línea de visión, sino no es necesario
+                        DataMech enemigo = enemigos_operativos.get(0);
+                        Phexagono posicion_enemigo = new Phexagono(enemigo.getColumna(), enemigo.getFila());
+                        int lado_encara_enemigo = Mapa.encarar(pe, posicion_enemigo);
+                        salto.setLado_destino(lado_encara_enemigo);
+
+
+                        //El resultado es el salto
+                        resultado = salto;
+
+
+
+                    }
+                }
+            }
+
+
+        }
+
+
+
+
+
         //Movernos a aquella a la que se pueda llegar
 
 
@@ -199,7 +256,7 @@ public class SunTzu {
                 //Si está por detrás la incentivamos
                 resultado += -p_encaramiento;
             }
-        }else if (encaramiento_enemigo == 3) {
+        } else if (encaramiento_enemigo == 3) {
             //Si está mirando hacia el sureste
             if (p.getFila() < p_enemigo.getFila()) {
                 resultado += p_encaramiento;
@@ -213,7 +270,7 @@ public class SunTzu {
                 //Si está por detrás la incentivamos
                 resultado += -p_encaramiento;
             }
-        }else if (encaramiento_enemigo == 4) {
+        } else if (encaramiento_enemigo == 4) {
             //Si está mirando hacia el sur
             if (p.getFila() < p_enemigo.getFila()) {
                 resultado += p_encaramiento;
@@ -221,7 +278,7 @@ public class SunTzu {
                 //Si está por detrás la incentivamos
                 resultado += -p_encaramiento;
             }
-        }else if (encaramiento_enemigo == 5) {
+        } else if (encaramiento_enemigo == 5) {
             //Si está mirando hacia el suroeste
             if (p.getFila() < p_enemigo.getFila()) {
                 resultado += p_encaramiento;
@@ -235,7 +292,7 @@ public class SunTzu {
                 //Si está por detrás la incentivamos
                 resultado += -p_encaramiento;
             }
-        }else if (encaramiento_enemigo == 6) {
+        } else if (encaramiento_enemigo == 6) {
             //Si está mirando hacia el noroeste
             if (p.getFila() > p_enemigo.getFila()) {
                 resultado += p_encaramiento;
@@ -258,16 +315,19 @@ public class SunTzu {
         //Procuramos que haya cobertura
         //Calculamos la LDV y cobertura
         ResultadoLDV rLDV = LDV.calcularLDV(estado.mapa, p, 1, p_enemigo, 1);
-        
-        if(rLDV.LDV){
-            if(rLDV.CPdirecta){
+
+        if (rLDV.LDV) {
+            if (rLDV.CPdirecta) {
                 resultado += -p_cobertura_enemigo;
             }
-            if(rLDV.CPinversa){
+            if (rLDV.CPinversa) {
                 resultado += +p_cobertura;
             }
         }
         
+        //Es mejor estar cerca del enemigo que lejos
+        resultado -= estado.mapa.distancia(p, p_enemigo) * p_distancia;
+
         return resultado;
     }
 }

@@ -109,8 +109,8 @@ public class Cargador {
                     vdm[i].setAtascado(Boolean.parseBoolean((br.readLine()).trim()));        //Está atascado en terreno pantanoso?
                     vdm[i].setEnelsuelo(Boolean.parseBoolean((br.readLine()).trim()));       //Está en el suelo?
                     String hex = (br.readLine()).trim();                                     //Leemos la posición
-                    vdm[i].setFila(Integer.parseInt(hex.substring(0, 2)));           //almacenamos la fila
-                    vdm[i].setColumna(Integer.parseInt(hex.substring(2, 4)));       //almacenamos la columna
+                    vdm[i].setColumna(Integer.parseInt(hex.substring(0, 2)));           //almacenamos la fila
+                    vdm[i].setFila(Integer.parseInt(hex.substring(2, 4)));       //almacenamos la columna
                     vdm[i].setEncaramientoMech(Integer.parseInt((br.readLine()).trim()));    //Encaramiento mech
                     vdm[i].setEncaramientoTorso(Integer.parseInt((br.readLine()).trim()));   //Encaramiento torso
                     vdm[i].setTemperatura(Integer.parseInt((br.readLine()).trim()));         //Temperatura

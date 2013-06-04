@@ -10,4 +10,6 @@ package bt;
  */
 abstract class Accion {
     
+    abstract Reglas.Fase getFase();
+    
 }

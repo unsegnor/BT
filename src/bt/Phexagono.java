@@ -53,7 +53,10 @@ class Phexagono {
     public String toString(){
         
         StringBuilder sb = new StringBuilder();
-        sb.append("(").append(this.getColumna()).append(",").append(this.getFila()).append(")");
+        
+        
+        sb.append(columna/10).append(columna%10).append(fila/10).append(fila%10);
+        //sb.append("(").append(this.getColumna()).append(",").append(this.getFila()).append(")");
     
         return sb.toString();
     }

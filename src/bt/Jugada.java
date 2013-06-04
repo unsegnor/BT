@@ -64,7 +64,7 @@ public class Jugada implements Runnable{
         //Obtener mejor siguiente movimiento hasta el momento
         Accion accion = SunTzu.siguienteAccion(i_jugador, c_fase);
         //Escribirla
-        Escritor.escribeAccion(accion);
+        Escritor.escribeAccion(i_jugador, accion);
     }
     
 }

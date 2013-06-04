@@ -12,102 +12,122 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * //Se encarga de recibir objetos que representan respuestas y escribir los archivos.
+ * //Se encarga de recibir objetos que representan respuestas y escribir los
+ * archivos.
+ *
  * @author Víctor
  */
 public class Escritor {
-    
+
     //Recibe acción
-    public static void escribeAccion(Accion accion){}
-    
-    public static void escribeAccion(Movimiento movimiento){
+    public static void escribeAccion(int jugador, Accion accion) {
+
+        if (accion != null) {
+            Reglas.Fase fase = accion.getFase();
+
+            switch (fase) {
+                case Movimiento:
+                    escribeMovimiento(jugador, (Movimiento) accion);
+            }
+        }
+
+    }
+
+    public static void escribeMovimiento(int jugador, Movimiento movimiento) {
+
+        //Discernir tipos de movimiento
+
         //Traducir a DataMov
         DataMov dm = new DataMov();
         dm.setTipoDeMovimiento(movimiento.getTipo());
-        int npasos = movimiento.getRuta().getPasos().size();
-        dm.setNumero_de_pasos(npasos);
-        dm.setPasos(movimiento.getRuta().getPasos().toArray(new Paso[npasos]));
+        int npasos = 0;
+        if (movimiento.getRuta() != null) {
+            npasos = movimiento.getRuta().getPasos().size();
+            dm.setPasos(movimiento.getRuta().getPasos().toArray(new Paso[npasos]));
+        }
         dm.setHexagono_destino(movimiento.getDestino());
         dm.setLado_destino(movimiento.getLado_destino());
         dm.setUsaMASC(movimiento.isUsaMASC());
+
+        dm.setNumero_de_pasos(npasos);
+
+        //Escribir el movimiento
+        escribeMovimiento(jugador, dm);
     }
-    
+
     //Escribe el movimiento que se le pasa en un archivo
-    public static void escribeMovimiento(int Jugador, DataMov dm){
-            
+    public static void escribeMovimiento(int Jugador, DataMov dm) {
+
         //Abrir archivo
-        File archivo = new File("accionJ"+Jugador+".sbt");
+        File archivo = new File("accionJ" + Jugador + ".sbt");
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(archivo));
-            
-            switch(dm.getTipoDeMovimiento()){
-            
+
+            switch (dm.getTipoDeMovimiento()) {
+
                 case Inmovil:
-                        bw.write("Inmovil\n");
-                break;
+                    bw.write("Inmovil\n");
+                    break;
                 case Saltar:
                     bw.write("Saltar\n");
-                    
+
                     //Escribir hexagono de destino
                     bw.write(dm.getHexagono_destino().toString() + "\n");
-                    
+
                     //Escribir el lado
-                    bw.write(dm.getLado_destino()+"\n");
-                    
-                break;
+                    bw.write(dm.getLado_destino() + "\n");
+
+                    break;
                 case Andar:
                     bw.write("Andar\n");
-                    
+
                     //Escribir hexagono de destino
                     bw.write(dm.getHexagono_destino().toString() + "\n");
-                    
+
                     //Escribir el lado
-                    bw.write(dm.getLado_destino()+"\n");
-                    
+                    bw.write(dm.getLado_destino() + "\n");
+
                     //Escribir si va a usar MASC
-                    bw.write(dm.isUsaMASC()?"True":"False");
-                    
+                    bw.write(dm.isUsaMASC() ? "True" : "False");
+
                     //Número de pasos
                     int npasos = dm.getNumero_de_pasos();
-                    bw.write(npasos+"\n");
-                    
+                    bw.write(npasos + "\n");
+
                     //Imprimir los pasos
-                    for(int i=0; i< npasos; i++){
-                        bw.write(dm.getPasos()[i].toString()+"\n");
+                    for (int i = 0; i < npasos; i++) {
+                        bw.write(dm.getPasos()[i].toString() + "\n");
                     }
-                break;
+                    break;
                 case Correr:
                     bw.write("Correr\n");
-                    
+
                     //Escribir hexagono de destino
                     bw.write(dm.getHexagono_destino().toString() + "\n");
-                    
+
                     //Escribir el lado
-                    bw.write(dm.getLado_destino()+"\n");
-                    
+                    bw.write(dm.getLado_destino() + "\n");
+
                     //Escribir si va a usar MASC
-                    bw.write(dm.isUsaMASC()?"True":"False");
-                    
+                    bw.write(dm.isUsaMASC() ? "True" : "False");
+
                     //Número de pasos
                     int npasos2 = dm.getNumero_de_pasos();
-                    bw.write(npasos2+"\n");
-                    
+                    bw.write(npasos2 + "\n");
+
                     //Imprimir los pasos
-                    for(int i=0; i< npasos2; i++){
-                        bw.write(dm.getPasos()[i].toString()+"\n");
+                    for (int i = 0; i < npasos2; i++) {
+                        bw.write(dm.getPasos()[i].toString() + "\n");
                     }
-                break;
+                    break;
             }
-       /*     
-            //Escribir el tipo de movimiento
-            bw.write(dm.getTipoDeMovimiento().toString() + "\n");
-            //Escribir el lado de destino
-            * */
-            
+
+            bw.close();
+
         } catch (IOException ex) {
             Logger.getLogger(Escritor.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
 
     }
 }

@@ -404,4 +404,161 @@ public class MapaTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
+
+    /**
+     * Test of caraIzquierda method, of class Mapa.
+     */
+    @Test
+    public void testCaraIzquierda() {
+        System.out.println("caraIzquierda");
+        int lado = 0;
+        int expResult = 0;
+        int result = Mapa.caraIzquierda(lado);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of caraDerecha method, of class Mapa.
+     */
+    @Test
+    public void testCaraDerecha() {
+        System.out.println("caraDerecha");
+        int lado = 0;
+        int expResult = 0;
+        int result = Mapa.caraDerecha(lado);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of encarar method, of class Mapa.
+     */
+    @Test
+    public void testEncarar() {
+        System.out.println("encarar");
+        Phexagono p_inicio = new Phexagono(30,17);
+        Phexagono p_fin = new Phexagono(12,19);
+        int expResult = 5;
+        int result = Mapa.encarar(p_inicio, p_fin);
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of masObstaculizaLDV method, of class Mapa.
+     */
+    @Test
+    public void testMasObstaculizaLDV() {
+        System.out.println("masObstaculizaLDV");
+        Phexagono a = null;
+        Phexagono b = null;
+        Phexagono origen = null;
+        Phexagono destino = null;
+        Mapa instance = null;
+        int expResult = 0;
+        int result = instance.masObstaculizaLDV(a, b, origen, destino);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of bloqueaLDV method, of class Mapa.
+     */
+    @Test
+    public void testBloqueaLDV() {
+        System.out.println("bloqueaLDV");
+        Phexagono hexagono = null;
+        Phexagono origen = null;
+        Phexagono destino = null;
+        Mapa instance = null;
+        boolean expResult = false;
+        boolean result = instance.bloqueaLDV(hexagono, origen, destino);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of masObstaculizaLDVresuelve method, of class Mapa.
+     */
+    @Test
+    public void testMasObstaculizaLDVresuelve() {
+        System.out.println("masObstaculizaLDVresuelve");
+        Phexagono a = null;
+        Phexagono b = null;
+        Phexagono origen = null;
+        Phexagono destino = null;
+        Mapa instance = null;
+        int expResult = 0;
+        int result = instance.masObstaculizaLDVresuelve(a, b, origen, destino);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of valido method, of class Mapa.
+     */
+    @Test
+    public void testValido_int_int() {
+        System.out.println("valido");
+        int columna = 0;
+        int fila = 0;
+        Mapa instance = null;
+        boolean expResult = false;
+        boolean result = instance.valido(columna, fila);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of valido method, of class Mapa.
+     */
+    @Test
+    public void testValido_Phexagono() {
+        System.out.println("valido");
+        Phexagono h = null;
+        Mapa instance = null;
+        boolean expResult = false;
+        boolean result = instance.valido(h);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of calcularCosteCambio method, of class Mapa.
+     */
+    @Test
+    public void testCalcularCosteCambio() {
+        System.out.println("calcularCosteCambio");
+        Phexagono hex = null;
+        Phexagono destino = null;
+        Mapa instance = null;
+        int expResult = 0;
+        int result = instance.calcularCosteCambio(hex, destino);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of cercanas method, of class Mapa.
+     */
+    @Test
+    public void testCercanas() {
+        System.out.println("cercanas");
+        Phexagono posicion = null;
+        int radio = 0;
+        Mapa instance = null;
+        ArrayList expResult = null;
+        ArrayList result = instance.cercanas(posicion, radio);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
 }

@@ -17,7 +17,7 @@ class OrdenadorDeEvaluaciones implements Comparator<Evaluacion> {
 
     @Override
     public int compare(Evaluacion t, Evaluacion t1) {
-       return Double.compare(t.valor, t1.valor);
+       return Double.compare(t1.valor, t.valor);
     }
     
 }
