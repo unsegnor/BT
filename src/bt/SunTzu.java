@@ -19,7 +19,8 @@ public class SunTzu {
     private static int p_nivel = 0;
     private static int p_cobertura = 1000;
     private static int p_cobertura_enemigo = 1000;
-    private static double p_distancia = 100;
+    private static double p_distancia = 0.001;
+    private static double p_alcance = 10000;
 
     public static Accion siguienteAccion(int jugador, Fase fase) {
 
@@ -58,7 +59,7 @@ public class SunTzu {
 
 
         //Si somos los últimos o primeros en mover debe influir en nuestra decisión
-        
+
 
 
         //Comprobar posiciones de los mechs enemigos operativos
@@ -198,6 +199,22 @@ public class SunTzu {
         //Escribirlos
         estado.datos_mechs = dm;
 
+        //Leer los jugadores e iniciativas
+        DataIniciativa ini = Cargador.cargarIniciativa(jugador);
+
+        //Escribir la iniciativa
+        estado.iniciativa = ini.orden;
+
+        int njugadores = ini.orden.length;
+
+        //Leer las descripciones de los mechs
+        DataDefMech[] dfm = new DataDefMech[njugadores];
+        for (int i = 0; i < njugadores; i++) {
+            dfm[i] = Cargador.cargarDefMech(jugador, i);
+        }
+
+        //Escribir defmechs en estado
+        estado.datos_def_mechs = dfm;
 
         return estado;
     }
@@ -221,18 +238,59 @@ public class SunTzu {
         return resultado;
     }
 
-    private static double evaluar(Phexagono p, EstadoDeJuego estado, DataMech enemigo) {
-        //Aquí es donde puntuamos lo bien o mal que podría estar la posición respecto un ememigo concreto
+    //Se evalúa la posición con el peor encaramiento para nosotros, en el peor de los casos
+    private static double evaluar_posicion(Phexagono p, EstadoDeJuego estado, Phexagono p_enemigo) {
+
+        Hexagono h_enemigo = estado.mapa.casilla(p_enemigo);
+        Hexagono h = estado.mapa.casilla(p);
+
         double resultado = 0;
+
+        //Es mejor que esté por encima, cuanto más alto mejor
+        int diferencia_nivel = h.getNivel() - h_enemigo.getNivel();
+        resultado += diferencia_nivel * p_nivel;
+
+        //Procuramos que haya cobertura
+        //Calculamos la LDV y cobertura
+        ResultadoLDV rLDV = LDV.calcularLDV(estado.mapa, p, 1, p_enemigo, 1);
+
+        if (rLDV.LDV) {
+            if (rLDV.CPdirecta) {
+                resultado += -p_cobertura_enemigo;
+            }
+            if (rLDV.CPinversa) {
+                resultado += +p_cobertura;
+            }
+        }
+
+        //Es mejor estar cerca del enemigo que lejos
+        resultado -= estado.mapa.distancia(p, p_enemigo) * p_distancia;
+
+        return resultado;
+    }
+
+    private static double evaluar_todo(Phexagono p, EstadoDeJuego estado, DataMech enemigo) {
 
         Phexagono p_enemigo = new Phexagono(enemigo.getColumna(), enemigo.getFila());
         Hexagono h_enemigo = estado.mapa.casilla(p_enemigo);
         Hexagono h = estado.mapa.casilla(p);
 
+        //Aquí es donde puntuamos lo bien o mal que podría estar la posición respecto un ememigo concreto
+        double resultado = 0;
+
         //Es mejor que esté detrás de él que delante
         //Depende hacia dónde esté mirando el enemigo
         int encaramiento_enemigo = enemigo.getEncaramientoMech();
 
+        resultado += evaluar_encaramiento(p, estado, p_enemigo, encaramiento_enemigo);
+
+        resultado += evaluar_posicion(p, estado, p_enemigo);
+
+        return resultado;
+    }
+
+    private static double evaluar_encaramiento(Phexagono p, EstadoDeJuego estado, Phexagono p_enemigo, int encaramiento_enemigo) {
+        double resultado = 0;
         //Si está mirando hacia arriba
         if (encaramiento_enemigo == 1) {
             //Y la posición está por delante de él entonces la penalizamos
@@ -307,27 +365,177 @@ public class SunTzu {
                 resultado += -p_encaramiento;
             }
         }
+        return resultado;
+    }
 
-        //Es mejor que esté por encima, cuanto más alto mejor
-        int diferencia_nivel = h.getNivel() - h_enemigo.getNivel();
-        resultado += diferencia_nivel * p_nivel;
+    private static double evaluar2(Phexagono p, EstadoDeJuego estado, DataMech enemigo) {
+        double resultado = 0;
 
-        //Procuramos que haya cobertura
-        //Calculamos la LDV y cobertura
-        ResultadoLDV rLDV = LDV.calcularLDV(estado.mapa, p, 1, p_enemigo, 1);
+        //Si el enemigo ya ha movido evaluamos con su posición y encaramiento, sino sólo con su posición actual
+        boolean hamovido = false;
 
-        if (rLDV.LDV) {
-            if (rLDV.CPdirecta) {
-                resultado += -p_cobertura_enemigo;
-            }
-            if (rLDV.CPinversa) {
-                resultado += +p_cobertura;
-            }
+        int nj = enemigo.getnJugador(); //Número de jugador del enemigo
+
+        if (turno(estado, nj) < turno(estado, estado.jugador)) {
+            hamovido = true;
         }
-        
-        //Es mejor estar cerca del enemigo que lejos
-        resultado -= estado.mapa.distancia(p, p_enemigo) * p_distancia;
+
+        if (hamovido) {
+
+            resultado = evaluar_todo(p, estado, enemigo);
+
+        } else {
+            //Sino obtenemos el alcance del enemigo
+
+            int pAndando = estado.datos_def_mechs[nj].getPuntosMovAndando();
+            int pCorriendo = estado.datos_def_mechs[nj].getPuntosMovCorriendo();
+            int pSaltando = estado.datos_def_mechs[nj].getPuntosMovSaltando();
+
+            int alcance_enemigo = Math.max(pAndando, Math.max(pCorriendo, pSaltando));
+
+
+            Phexagono p_enemigo = new Phexagono(enemigo.getColumna(), enemigo.getFila());
+            Hexagono h_enemigo = estado.mapa.casilla(p_enemigo);
+            Hexagono h = estado.mapa.casilla(p);
+
+
+            //Obtenemos las casillas a su alcance
+            ArrayList<Phexagono> cercanas = estado.mapa.cercanas(p_enemigo, alcance_enemigo);
+
+
+            //Evaluarlas todas con el peor encaramiento posible para nosotros
+            //Simplemente evaluamos las posiciones que puede tomar el enemigo como si fueran nuestras, con la misma función
+            //como si nosotros fuéramos el enemigo
+            //Evaluar todas las casillas
+
+            //Utilizaremos como enemigo la posición que estamos evaluando... las posiciones tienen que ser hexágono con lado, sino no se puede
+
+            //ArrayList<Evaluacion> evaluaciones = new ArrayList<Evaluacion>();
+
+            //Tenemos que evaluar cada posición con cada encaramiento nuestro posible
+            //Los encaramientos los calculamos luego
+
+            double min_eval = Double.MAX_VALUE;
+
+            for (Phexagono pe : cercanas) {
+                //Si es distinta de la casilla actual
+                boolean valida = true;
+                if (pe.getColumna() == p.getColumna() && pe.getFila() == p.getFila()) {
+                    valida = false;
+                }
+                if (valida) {
+                    //Evaluar y añadir como posible
+                    double bondad = evaluar_posicion(p, estado, pe);
+                    //Almacenamos la peor
+                    if (bondad < min_eval) {
+                        min_eval = bondad;
+                    }
+                }
+            }
+
+
+            //Nos ponemos en el peor de los casos, nos quedamos con la casilla con peor evaluación para nosotros
+            resultado = min_eval;
+        }
 
         return resultado;
+    }
+
+    private static double evaluar(Phexagono p, EstadoDeJuego estado, DataMech enemigo) {
+        double resultado = 0;
+
+        //Si el enemigo ya ha movido evaluamos con su posición y encaramiento, sino sólo con su posición actual
+        boolean hamovido = false;
+
+        int nj = enemigo.getnJugador(); //Número de jugador del enemigo
+
+        if (turno(estado, nj) < turno(estado, estado.jugador)) {
+            hamovido = true;
+        }
+
+        if (hamovido) {
+
+            resultado = evaluar_todo(p, estado, enemigo);
+
+        } else {
+            //Sino obtenemos el alcance del enemigo
+
+            int pAndando = estado.datos_def_mechs[nj].getPuntosMovAndando();
+            int pCorriendo = estado.datos_def_mechs[nj].getPuntosMovCorriendo();
+            int pSaltando = estado.datos_def_mechs[nj].getPuntosMovSaltando();
+
+            int alcance_enemigo = Math.max(pAndando, Math.max(pCorriendo, pSaltando));
+
+
+            Phexagono p_enemigo = new Phexagono(enemigo.getColumna(), enemigo.getFila());
+            Hexagono h_enemigo = estado.mapa.casilla(p_enemigo);
+            Hexagono h = estado.mapa.casilla(p);
+
+
+            //Obtenemos las casillas a su alcance
+            ArrayList<Phexagono> cercanas = estado.mapa.cercanas(p_enemigo, alcance_enemigo);
+
+            //Tienen prioridad las casillas que están fuera de su alcance
+
+            //Evaluarlas todas con el peor encaramiento posible para nosotros
+            //Simplemente evaluamos las posiciones que puede tomar el enemigo como si fueran nuestras, con la misma función
+            //como si nosotros fuéramos el enemigo
+            //Evaluar todas las casillas
+
+            //Utilizaremos como enemigo la posición que estamos evaluando... las posiciones tienen que ser hexágono con lado, sino no se puede
+
+            //ArrayList<Evaluacion> evaluaciones = new ArrayList<Evaluacion>();
+
+            //Tenemos que evaluar cada posición con cada encaramiento nuestro posible
+            //Los encaramientos los calculamos luego
+
+            double min_eval = Double.MAX_VALUE;
+            boolean alalcance = false;
+            for (Phexagono pe : cercanas) {
+                //Si es distinta de la casilla actual
+                boolean valida = true;
+                if (pe.getColumna() == p.getColumna() && pe.getFila() == p.getFila()) {
+                    valida = false;
+                    alalcance = true;
+                }
+                if (valida) {
+                    //Evaluar y añadir como posible
+                    double bondad = evaluar_posicion(p, estado, pe);
+                    //System.out.println(p + " con el enemigo en " + pe + " vale " + bondad);
+                    //Almacenamos la peor
+                    if (bondad < min_eval) {
+                        min_eval = bondad;
+                    }
+                }
+            }
+
+            //Si la casilla está al alcance del enemigo entonces tiene penalización
+            //porque le puede tomar la espalda
+            if(alalcance){
+                min_eval += -p_alcance;
+                //System.out.println("La casilla " + p + " está al alcance del enemigo.");
+            }
+
+            //Nos ponemos en el peor de los casos, nos quedamos con la casilla con peor evaluación para nosotros
+            resultado = min_eval;
+            System.out.println("Mínimo valor de " + p + " es " + resultado);
+        }
+
+        return resultado;
+    }
+
+    private static int turno(EstadoDeJuego estado, int nj) {
+        int respuesta = -1;
+
+        int njugadores = estado.iniciativa.length;
+
+        for (int i = 0; i < njugadores; i++) {
+            //Recorremos los turnos hasta que encontramos el del jugador
+            if (estado.iniciativa[i] == nj) {
+                respuesta = i;
+            }
+        }
+
+        return respuesta;
     }
 }

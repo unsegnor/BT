@@ -63,8 +63,8 @@ public class CargadorTest {
         assertEquals(false, result.getMechs()[0].isDesconectado());
         assertEquals(false, result.getMechs()[0].isAtascado());
         assertEquals(false, result.getMechs()[0].isEnelsuelo());
-        assertEquals(11, result.getMechs()[0].getFila());
-        assertEquals(3, result.getMechs()[0].getColumna());
+        assertEquals(3, result.getMechs()[0].getFila());
+        assertEquals(11, result.getMechs()[0].getColumna());
         assertEquals(3, result.getMechs()[0].getEncaramientoMech());
         assertEquals(3, result.getMechs()[0].getEncaramientoTorso());
         assertEquals(0, result.getMechs()[0].getTemperatura());

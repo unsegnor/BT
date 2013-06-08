@@ -741,7 +741,7 @@ class Mapa {
                              lista.add(cara6);
                              }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if (valido(cara1)) {
                                 nuevoarray.add(cara1);
                             }
@@ -782,7 +782,7 @@ class Mapa {
                              lista.add(cara4);
                              }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if (valido(cara3)) {
                                 nuevoarray.add(cara3);
                             }
@@ -823,7 +823,7 @@ class Mapa {
                              lista.add(cara2);
                              }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if (valido(cara1)) {
                                 nuevoarray.add(cara1);
                             }
@@ -864,7 +864,7 @@ class Mapa {
                              lista.add(cara5);
                              }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if (valido(cara4)) {
                                 nuevoarray.add(cara4);
                             }
@@ -905,7 +905,7 @@ class Mapa {
                              lista.add(cara3);
                              }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if (valido(cara2)) {
                                 nuevoarray.add(cara2);
                             }
@@ -946,7 +946,7 @@ class Mapa {
                              lista.add(cara6);
                              }*/
                             //Añadimos las dos opciones y retrasamos la elección
-                            nuevoarray = new ArrayList<>();
+                            nuevoarray = new ArrayList<Phexagono>();
                             if (valido(cara5)) {
                                 nuevoarray.add(cara5);
                             }

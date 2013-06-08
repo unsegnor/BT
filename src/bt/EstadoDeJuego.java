@@ -38,4 +38,10 @@ public class EstadoDeJuego {
     //Datos de los mechs
     DataMechs datos_mechs;
     
+    //Datos de iniciativa
+    int[] iniciativa;
+    
+    //Definiciones de meches por jugador
+    DataDefMech[] datos_def_mechs;
+    
 }
