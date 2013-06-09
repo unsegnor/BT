@@ -13,6 +13,12 @@ public class Reglas {
     
     //Tipos de movimiento
     public enum tiposDeMovimiento {Indefinido, Inmovil, Andar, Correr, Saltar};
+    //Tipos de reacción
+    public enum TiposDeReaccion {Igual, Derecha, Izquierda};
+    //Tipos de localización
+    public enum Localizacion {BI, BD, PI, PD, TC, TI, TD, CAB, BIBD};
+    //Tipos de Objetivo
+    public enum TiposObjetivo {Mech, Hexagono, Ninguno};
     //Fases
     public enum Fase{Movimiento, Reaccion, AtaqueArmas, AtaqueFisico, FinalTurno, Desconocido};
     //Tipos de paso
