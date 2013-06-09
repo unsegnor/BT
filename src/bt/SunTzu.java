@@ -35,6 +35,19 @@ public class SunTzu {
         switch (fase) {
             case Movimiento:
                 resultado = responderAMovimiento(estado);
+                break;
+            case Reaccion:
+                resultado = responderAReaccion(estado);
+                break;
+            case AtaqueArmas:
+                resultado = responderAAtaqueArmas(estado);
+                break;
+            case AtaqueFisico:
+                resultado = responderAAtaqueFisico(estado);
+                break;
+            case FinalTurno:
+                resultado = responderAFinalTurno(estado);
+                break;
         }
 
 
@@ -537,5 +550,27 @@ public class SunTzu {
         }
 
         return respuesta;
+    }
+
+    private static Accion responderAReaccion(EstadoDeJuego estado) {
+        
+        //TODO Encarar hacia donde está el enemigo más cercano
+        
+        //De momento nos quedamos igual
+        return new ReaccionarIgual();
+        
+        
+    }
+
+    private static Accion responderAAtaqueArmas(EstadoDeJuego estado) {
+        return new NoDisparar();
+    }
+
+    private static Accion responderAAtaqueFisico(EstadoDeJuego estado) {
+        return new NoAtacar();
+    }
+
+    private static Accion responderAFinalTurno(EstadoDeJuego estado) {
+        return new NoHacerNada();
     }
 }
