@@ -293,7 +293,7 @@ public class Escritor {
             
             bw.write(accion.n_radiadores_a_encender + "\n");
             
-            bw.write(accion.soltarGarrote?"True":"False");
+            bw.write(accion.soltarGarrote?"True\n":"False\n");
             
             bw.write(accion.municiones_a_expulsar.size() + "\n");
 
