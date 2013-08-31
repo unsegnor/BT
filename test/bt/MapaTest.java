@@ -262,7 +262,7 @@ public class MapaTest {
             Phexagono destino = new Phexagono(c2, f2);
             Mapa instance = map;
             Phexagono[] expResult = null;
-            ArrayList<ArrayList<Phexagono> > result = instance.intermedios(origen, destino);
+            ArrayList<ArrayList<Phexagono>> result = instance.intermedios(origen, destino);
             //assertEquals(expResult, result);
             for (int i = 0; i < result.size(); i++) {
                 System.out.println(result.get(i));
@@ -271,7 +271,7 @@ public class MapaTest {
 
     }
 
-    @Test
+    //@Test
     public void testIntermediosDeLaMuerte() {
         System.out.println("intermedios de la muerte");
         int diferencias = 0;
@@ -328,7 +328,7 @@ public class MapaTest {
                     System.out.print((i < igual.length ? igual[i] : "") + " -> ");
                     if (i < result.size()) {
                         for (int p = 0; p < result.get(i).size(); p++) {
-                             System.out.print(result.get(i).get(p) + ", ");
+                            System.out.print(result.get(i).get(p) + ", ");
                         }
                     }
                     System.out.println();
@@ -408,7 +408,7 @@ public class MapaTest {
     /**
      * Test of caraIzquierda method, of class Mapa.
      */
-    @Test
+    //@Test
     public void testCaraIzquierda() {
         System.out.println("caraIzquierda");
         int lado = 0;
@@ -422,7 +422,7 @@ public class MapaTest {
     /**
      * Test of caraDerecha method, of class Mapa.
      */
-    @Test
+    //@Test
     public void testCaraDerecha() {
         System.out.println("caraDerecha");
         int lado = 0;
@@ -439,8 +439,8 @@ public class MapaTest {
     @Test
     public void testEncarar() {
         System.out.println("encarar");
-        Phexagono p_inicio = new Phexagono(30,17);
-        Phexagono p_fin = new Phexagono(12,19);
+        Phexagono p_inicio = new Phexagono(30, 17);
+        Phexagono p_fin = new Phexagono(12, 19);
         int expResult = 5;
         int result = Mapa.encarar(p_inicio, p_fin);
         assertEquals(expResult, result);
@@ -449,7 +449,7 @@ public class MapaTest {
     /**
      * Test of masObstaculizaLDV method, of class Mapa.
      */
-    @Test
+    //@Test
     public void testMasObstaculizaLDV() {
         System.out.println("masObstaculizaLDV");
         Phexagono a = null;
@@ -467,7 +467,7 @@ public class MapaTest {
     /**
      * Test of bloqueaLDV method, of class Mapa.
      */
-    @Test
+    //@Test
     public void testBloqueaLDV() {
         System.out.println("bloqueaLDV");
         Phexagono hexagono = null;
@@ -484,7 +484,7 @@ public class MapaTest {
     /**
      * Test of masObstaculizaLDVresuelve method, of class Mapa.
      */
-    @Test
+    //@Test
     public void testMasObstaculizaLDVresuelve() {
         System.out.println("masObstaculizaLDVresuelve");
         Phexagono a = null;
@@ -502,7 +502,7 @@ public class MapaTest {
     /**
      * Test of valido method, of class Mapa.
      */
-    @Test
+    //@Test
     public void testValido_int_int() {
         System.out.println("valido");
         int columna = 0;
@@ -518,7 +518,7 @@ public class MapaTest {
     /**
      * Test of valido method, of class Mapa.
      */
-    @Test
+    //@Test
     public void testValido_Phexagono() {
         System.out.println("valido");
         Phexagono h = null;
@@ -533,7 +533,7 @@ public class MapaTest {
     /**
      * Test of calcularCosteCambio method, of class Mapa.
      */
-    @Test
+    //@Test
     public void testCalcularCosteCambio() {
         System.out.println("calcularCosteCambio");
         Phexagono hex = null;
@@ -552,13 +552,114 @@ public class MapaTest {
     @Test
     public void testCercanas() {
         System.out.println("cercanas");
-        Phexagono posicion = null;
-        int radio = 0;
+        Phexagono posicion = new Phexagono(5, 5);
+        int radio = 3;
+        Mapa instance = map;
+        ArrayList<Phexagono> result = instance.cercanas(posicion, radio);
+
+        for (int i = 0; i < result.size(); i++) {
+            System.out.println(result.get(i));
+        }
+
+    }
+
+    /**
+     * Test of distancia method, of class Mapa.
+     */
+    //@Test
+    public void testDistancia_Phexagono_Phexagono() {
+        System.out.println("distancia");
+        Phexagono a = null;
+        Phexagono b = null;
         Mapa instance = null;
-        ArrayList expResult = null;
-        ArrayList result = instance.cercanas(posicion, radio);
-        assertEquals(expResult, result);
+        double expResult = 0.0;
+        double result = instance.distancia(a, b);
+        assertEquals(expResult, result, 0.0);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of distancia method, of class Mapa.
+     */
+    //@Test
+    public void testDistancia_Punto_Punto() {
+        System.out.println("distancia");
+        Punto a = null;
+        Punto b = null;
+        Mapa instance = null;
+        double expResult = 0.0;
+        double result = instance.distancia(a, b);
+        assertEquals(expResult, result, 0.0);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of esImpar method, of class Mapa.
+     */
+    @Test
+    public void testEsImpar() {
+        System.out.println("esImpar");
+        Phexagono hexagono = new Phexagono(1, 2);
+        Mapa instance = map;
+        boolean expResult = true;
+        boolean result = instance.esImpar(hexagono);
+        assertEquals(expResult, result);
+        hexagono = new Phexagono(2, 5);
+        expResult = false;
+        result = instance.esImpar(hexagono);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+    }
+
+    /**
+     * Test of distanciaCasillas method, of class Mapa.
+     */
+    @Test
+    public void testDistanciaCasillas() {
+        System.out.println("distanciaCasillas");
+        Phexagono a = new Phexagono(2, 2);
+        Phexagono b = new Phexagono(7, 3);
+        Mapa instance = map;
+        int expResult = 5;
+        int result = instance.distanciaCasillas(a, b);
+        assertEquals(expResult, result);
+
+        a = new Phexagono(3, 5);
+        b = new Phexagono(5, 2);
+        expResult = 4;
+        result = instance.distanciaCasillas(a, b);
+        assertEquals(expResult, result);
+
+        a = new Phexagono(3, 5);
+        b = new Phexagono(5, 2);
+        expResult = 4;
+        result = instance.distanciaCasillas(a, b);
+        assertEquals(expResult, result);
+
+        a = new Phexagono(1, 1);
+        b = new Phexagono(1, 5);
+        expResult = 4;
+        result = instance.distanciaCasillas(a, b);
+        assertEquals(expResult, result);
+
+        a = new Phexagono(3, 5);
+        b = new Phexagono(5, 2);
+        expResult = 4;
+        result = instance.distanciaCasillas(a, b);
+        assertEquals(expResult, result);
+
+        a = new Phexagono(2, 1);
+        b = new Phexagono(6, 1);
+        expResult = 4;
+        result = instance.distanciaCasillas(a, b);
+        assertEquals(expResult, result);
+
+        a = new Phexagono(3, 7);
+        b = new Phexagono(1, 1);
+        expResult = 7;
+        result = instance.distanciaCasillas(a, b);
+        assertEquals(expResult, result);
     }
 }

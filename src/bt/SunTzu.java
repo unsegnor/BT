@@ -71,8 +71,8 @@ public class SunTzu {
         Accion resultado = null;
 
 
-        //Si somos los últimos o primeros en mover debe influir en nuestra decisión
-
+        //TODO Si somos los últimos o primeros en mover debe influir en nuestra decisión
+        
 
 
         //Comprobar posiciones de los mechs enemigos operativos
@@ -102,6 +102,7 @@ public class SunTzu {
         int max_pm = Math.max(pAndar, Math.max(pCorrer, pSaltar));
 
         ArrayList<Phexagono> posiciones_cercanas = estado.mapa.cercanas(posicion_mech, max_pm);
+        System.out.println("Posiciones cercanas a " + posicion_mech + " con rango " + max_pm);
 
         //Ordenar las posiciones en función de la ventaja que nos confieren
         ArrayList<Evaluacion<Phexagono>> evaluaciones = new ArrayList<Evaluacion<Phexagono>>();
@@ -117,6 +118,7 @@ public class SunTzu {
             }
             if (valida) {
                 //Evaluar y añadir como posible
+                System.out.println(p);
                 double bondad = evaluar(p, estado, enemigos_operativos);
                 evaluaciones.add(new Evaluacion(p, bondad));
             }
@@ -486,7 +488,7 @@ public class SunTzu {
 
 
             //Obtenemos las casillas a su alcance
-            ArrayList<Phexagono> cercanas = estado.mapa.cercanas(p_enemigo, alcance_enemigo);
+            ArrayList<Phexagono> cercanas_al_enemigo = estado.mapa.cercanas(p_enemigo, alcance_enemigo);
 
             //Tienen prioridad las casillas que están fuera de su alcance
 
@@ -504,7 +506,7 @@ public class SunTzu {
 
             double min_eval = Double.MAX_VALUE;
             boolean alalcance = false;
-            for (Phexagono pe : cercanas) {
+            for (Phexagono pe : cercanas_al_enemigo) {
                 //Si es distinta de la casilla actual
                 boolean valida = true;
                 if (pe.getColumna() == p.getColumna() && pe.getFila() == p.getFila()) {
@@ -531,7 +533,7 @@ public class SunTzu {
 
             //Nos ponemos en el peor de los casos, nos quedamos con la casilla con peor evaluación para nosotros
             resultado = min_eval;
-            System.out.println("Mínimo valor de " + p + " es " + resultado);
+            //System.out.println("Mínimo valor de " + p + " es " + resultado);
         }
 
         return resultado;
@@ -556,6 +558,22 @@ public class SunTzu {
         
         //TODO Encarar hacia donde está el enemigo más cercano
         
+        //Obtener el mech actual
+        DataMech mech_actual = estado.getMechActual();
+        
+        //Obtener la posición actual
+        Phexagono posicion_mech = new Phexagono(mech_actual.getColumna(), mech_actual.getFila());
+
+        //Obtener encaramiento actual
+        int encaramiento_actual = mech_actual.getEncaramientoTorso();
+        
+        //Determinamos los encaramientos posibles
+        int[] encaramientos = new int[3];
+        
+        encaramientos[0] = encaramiento_actual;
+        
+        
+        
         //De momento nos quedamos igual
         return new ReaccionarIgual();
         
@@ -563,7 +581,7 @@ public class SunTzu {
     }
 
     private static Accion responderAAtaqueArmas(EstadoDeJuego estado) {
-        return new NoDisparar();
+        return new DispararConTodoAlMasCercano(estado);
     }
 
     private static Accion responderAAtaqueFisico(EstadoDeJuego estado) {

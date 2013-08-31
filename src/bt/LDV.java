@@ -4,7 +4,6 @@
  */
 package bt;
 
-import bt.Reglas.TerrenoTipo;
 import java.util.ArrayList;
 
 /**

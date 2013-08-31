@@ -12,9 +12,9 @@ import java.util.Random;
  *
  * @author Víctor
  */
-class Mapa {
+public class Mapa {
 
-    static int caraIzquierda(int lado) {
+    public static int caraIzquierda(int lado) {
         int r;
         if (lado == 1) {
             r = 6;
@@ -24,7 +24,7 @@ class Mapa {
         return r;
     }
 
-    static int caraDerecha(int lado) {
+    public static int caraDerecha(int lado) {
         int r;
         if (lado == 6) {
             r = 1;
@@ -33,7 +33,7 @@ class Mapa {
         }
         return r;
     }
-
+    
     /**
      * Devuelve el lado desde el que se encara p_fin desde p_inicio
      *
@@ -131,12 +131,12 @@ class Mapa {
         return respuesta;
     }
 
-    public Phexagono cara(Phexagono p, int cara) {
+    public static Phexagono cara(Phexagono p, int cara) {
         return cara(p.getColumna(), p.getFila(), cara);
     }
 
     //Devuelve el hexágono que está en esa cara
-    public Phexagono cara(int columna, int fila, int cara) {
+    public static Phexagono cara(int columna, int fila, int cara) {
         Phexagono respuesta = null;
         if (cara == 1) {
             //Devolvemos el que está encima, es decir una fila antes
@@ -184,46 +184,93 @@ class Mapa {
         return respuesta;
     }
 
-    public ResultadoLDV calcular(Mapa mapa, Phexagono origen, int suma_origen, Phexagono destino, int suma_destino) {
-
-        //Una está dentro del agua y la otra no, no hay LDV
-
-        //Si son adyacentes entonces sí hay LDV salvo que se cumpla lo anterior.
-
-        //Si no se cumplen las dos anteriores y las dos están sumergidas entonces no hay LDV
-
-
-
-        //Representar los hexágonos en el espacio
-        //Obtener posición del orígen y el destino
-        Punto p_origen = puntoEspacial(origen);
-        p_origen.z += suma_origen * 6;
-        Punto p_destino = puntoEspacial(destino);
-        p_destino.z += suma_destino * 6;
-
-        //Calcular la recta que une los dos puntos
-
-
-        //Ir calculando el punto de la cara por la que entra y el punto de la cara por la que sale
-
-
-        return null;
-    }
-
     public Punto puntoEspacial(Phexagono posicion) {
         return puntoEspacial(posicion.getColumna(), posicion.getFila());
     }
 
-    public double distancia(Phexagono a, Phexagono b){
+    public double distancia(Phexagono a, Phexagono b) {
         return distancia(puntoEspacial(a), puntoEspacial(b));
     }
     
-    public double distancia(Punto a, Punto b){
+    public boolean esImpar(Phexagono hexagono){
+        return (hexagono.getColumna()%2==1);
+    }
+    
+    public int distanciaCasillas(Phexagono a, Phexagono b){
+        int d = Math.abs(a.getColumna() - b.getColumna());
+        
+        if(esImpar(a)){
+
+            if(esImpar(b)){
+                
+                int d2 = (Math.abs(a.getFila()-b.getFila()) - d/2);
+                
+                if(d2>0) d+= d2;
+            }
+            
+            else
+            {
+                if(b.getFila()<a.getFila()){
+                
+                int d2 = Math.abs(b.getFila()-a.getFila())-((d+1)/2);
+                
+                if(d2>0) d+= d2;
+                
+                }
+                else
+                {
+                int d2 = Math.abs(b.getFila()-a.getFila())-((d-1)/2);
+                
+                if(d2>0) d+= d2;
+                       
+                    
+                }
+                
+            }
+            
+        }
+        else
+        {
+         
+         if(esImpar(b)){
+                
+                if(b.getFila()>=a.getFila()){
+
+                int d2 = Math.abs(b.getFila()-a.getFila())-((d+1)/2);
+                
+                if(d2>0) d+= d2;
+                }
+                else
+                {
+
+                int d2 = Math.abs(b.getFila()-a.getFila())-((d-1)/2);
+                
+                if(d2>0) d+= d2;
+                       
+                    
+                }
+                
+            }
+            else
+            {
+                int d2 = (Math.abs(a.getFila()-b.getFila()) - d/2);
+                
+                if(d2>0) d+= d2;
+                
+                
+            }   
+            
+        }
+            
+        return d;
+    }
+
+    public double distancia(Punto a, Punto b) {
         double diffX = Math.abs(a.x - b.x);
         double diffY = Math.abs(a.y - b.y);
         return Math.sqrt((diffX * diffX) + (diffY * diffY));
     }
-    
+
     public Punto puntoEspacial(int columna, int fila) {
         //Cada hexágono mide 30 metros de lado a lado
         //Vamos a devolver la posición del centro del hexágono en el espacio
@@ -356,7 +403,7 @@ class Mapa {
     }
     //Devuelve la cara del hexágono siguiente con la que se encuentra
 
-    public int caracontraria(int cara) {
+    public static int caracontraria(int cara) {
         int respuesta = 0;
         if (cara == 1) {
             respuesta = 4;
@@ -377,38 +424,7 @@ class Mapa {
     //Indica cuál de los dos hexágonos obstaculiza más la LDV
     //0 es que obstaculizan por igual, 1 que a obstaculiza más y 2 que b obstaculiza más
 
-    public int masObstaculizaLDV(Phexagono a, Phexagono b, Phexagono origen, Phexagono destino) {
-
-        //El que más obstaculiza la LDV será siempre el más alto de los dos
-
-        //En caso de que sean iguales el que tenga el mayor modificador
-
-
-        //TODO si ralla mucho esta función lo que haremos será devolver todos los caminos posibles
-        //y que se escoja después de calcular la línea de visión con todos.
-        return 0;
-    }
-
-    public boolean bloqueaLDV(Phexagono hexagono, Phexagono origen, Phexagono destino) {
-        boolean respuesta = false;
-
-        //El hexágono bloquea la LDV si
-
-        //Está al lado del orígen y mide más que éste
-        //Está al lado del destino y mide más que éste
-
-        return respuesta;
-    }
     Random rand = new Random();
-
-    //Ejecuta la función anterior y en caso de empate devuelve uno aleatoriamente
-    public int masObstaculizaLDVresuelve(Phexagono a, Phexagono b, Phexagono origen, Phexagono destino) {
-        int r = masObstaculizaLDV(a, b, origen, destino);
-        if (r == 0) {
-            r = 1 + rand.nextInt(2);
-        }
-        return r;
-    }
 
     //Indica si un hexágono es válido o está fuera del mapa
     public boolean valido(int columna, int fila) {
@@ -425,8 +441,8 @@ class Mapa {
         //en función de cuál obstaculice más la LDV y se añade a la lista directamente pasando a ser el siguiente
         //el hexágono en el que deja de darse esa situación de ambigüedad. Ya que ninguno de los anteriores puede ser
         //el hexágono de destino.
-        ArrayList<ArrayList<Phexagono> > lista = new ArrayList<ArrayList<Phexagono> >();
-        
+        ArrayList<ArrayList<Phexagono>> lista = new ArrayList<ArrayList<Phexagono>>();
+
         ArrayList<Phexagono> nuevoarray; //Array que utilizamos para añadir a la lista
 
         //Trazar línea entre los hexágonos
@@ -1021,9 +1037,6 @@ class Mapa {
         return lista;
     }
 
-    public int cortaCara(Phexagono h, Recta r) {
-        return 0;
-    }
 
     int calcularCosteCambio(Phexagono hex, Phexagono destino) {
         //Coste total
@@ -1084,20 +1097,48 @@ class Mapa {
     ArrayList<Phexagono> cercanas(Phexagono posicion, int radio) {
         ArrayList<Phexagono> respuesta = new ArrayList<Phexagono>();
 
-        //TODO arreglar, de momento voy a simplficar el método para obtener rápido un conjunto, pero no está bien
+        //Nos colocamos en la casilla superior del hexágono a dibujar
+        Phexagono inicial = new Phexagono(posicion.getColumna(), posicion.getFila() - radio);
+        int r2 = (radio * 2) + 1;
 
-        //Generar todas las posiciones
+        //Anotamos todas las casillas que bajan hasta 2 veces el radio
+        respuesta.addAll(obtenerCasillasColumnaAbajo(inicial, r2));
 
-        for (int i = -radio; i <= radio; i++) {
-            for (int j = -radio; j <= radio; j++) {
+        //Hacia la izquierda
+        //Nos movemos a la casilla de la cara 5 y anotamos todas las que hay hacia abajo radio veces
+        Phexagono topeizquierda = inicial;
+        Phexagono topederecha = inicial;
+        for (int i = 1; i <= radio; i++) {
+            //Movemos a la casilla en 5
+            topeizquierda = this.cara(topeizquierda, 5);
+            //Y a la casilla en 3
+            topederecha = this.cara(topederecha, 3);
 
-                int c = posicion.getColumna() - i;
-                int f = posicion.getFila() - j;
+            //Anotamos r2-2*i casillas hacia abajo
+            int ranotar = r2 - i;
 
-                //Si es una casilla válida
-                if (this.valido(c, f)) {
-                    respuesta.add(new Phexagono(c, f));
-                }
+            respuesta.addAll(obtenerCasillasColumnaAbajo(topeizquierda, ranotar));
+            respuesta.addAll(obtenerCasillasColumnaAbajo(topederecha, ranotar));
+        }
+
+        //Hemos terminado
+        
+        return respuesta;
+    }
+
+    private ArrayList<Phexagono> obtenerCasillasColumnaAbajo(Phexagono casilla, int nfilas) {
+        return obtenerCasillasColumnaAbajo(casilla.getFila(), casilla.getColumna(), nfilas);
+    }
+
+    private ArrayList<Phexagono> obtenerCasillasColumnaAbajo(int fila_inicial, int columna, int nfilas) {
+        ArrayList<Phexagono> respuesta = new ArrayList<Phexagono>();
+
+        //Anotamos la primera y todas las que surgan sumando uno a la fila hasta nfilas
+        for (int i = 0; i < nfilas; i++) {
+            int f = fila_inicial + i;
+            Phexagono p = new Phexagono(columna, f);
+            if (valido(p)) {
+                respuesta.add(p);
             }
         }
 

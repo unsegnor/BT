@@ -8,7 +8,7 @@ package bt;
  * //Almacena una fila y una columna que representa un hexágono del mapa
  * @author Víctor
  */
-class Phexagono {
+public class Phexagono {
     
     //Fila
     private int fila;

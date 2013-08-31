@@ -44,4 +44,17 @@ public class EstadoDeJuego {
     //Definiciones de meches por jugador
     DataDefMech[] datos_def_mechs;
     
+    public DataMech getMechActual(){
+        DataMech respuesta = null;
+
+        for (DataMech mech : datos_mechs.getMechs()) {
+            if (mech.getnJugador() == jugador) {
+                respuesta = mech;
+            }
+        }
+        
+        
+        return respuesta;
+    }
+    
 }
