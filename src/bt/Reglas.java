@@ -4,11 +4,14 @@
  */
 package bt;
 
+import Aestrella.I_Coste;
+
 /**
  * Aquí vamos a almacenar las reglas del juego. Y las funciones que las consultan.
  * @author Víctor
  */
 public class Reglas {
+    public static int costeGiro = 1;
     
     
     //Tipos de movimiento

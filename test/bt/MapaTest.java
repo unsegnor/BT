@@ -158,19 +158,7 @@ public class MapaTest {
     /**
      * Test of calcular method, of class Mapa.
      */
-    @Test
-    public void testCalcular() {
-        System.out.println("calcular");
-        Mapa mapa = map;
-        Phexagono origen = new Phexagono(7, 4);
-        int suma_origen = 0;
-        Phexagono destino = new Phexagono(8, 4);
-        int suma_destino = 0;
-        Mapa instance = map;
-        ResultadoLDV expResult = null;
-        ResultadoLDV result = instance.calcular(mapa, origen, suma_origen, destino, suma_destino);
-        assertEquals(expResult, result);
-    }
+
 
     /**
      * Test of puntoEspacial method, of class Mapa.
@@ -342,22 +330,6 @@ public class MapaTest {
     }
 
     /**
-     * Test of cortaCara method, of class Mapa.
-     */
-    //@Test
-    public void testCortaCara() {
-        System.out.println("cortaCara");
-        Phexagono h = null;
-        Recta r = null;
-        Mapa instance = null;
-        int expResult = 0;
-        int result = instance.cortaCara(h, r);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of vertices method, of class Mapa.
      */
     //@Test
@@ -445,60 +417,7 @@ public class MapaTest {
         int result = Mapa.encarar(p_inicio, p_fin);
         assertEquals(expResult, result);
     }
-
-    /**
-     * Test of masObstaculizaLDV method, of class Mapa.
-     */
-    //@Test
-    public void testMasObstaculizaLDV() {
-        System.out.println("masObstaculizaLDV");
-        Phexagono a = null;
-        Phexagono b = null;
-        Phexagono origen = null;
-        Phexagono destino = null;
-        Mapa instance = null;
-        int expResult = 0;
-        int result = instance.masObstaculizaLDV(a, b, origen, destino);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of bloqueaLDV method, of class Mapa.
-     */
-    //@Test
-    public void testBloqueaLDV() {
-        System.out.println("bloqueaLDV");
-        Phexagono hexagono = null;
-        Phexagono origen = null;
-        Phexagono destino = null;
-        Mapa instance = null;
-        boolean expResult = false;
-        boolean result = instance.bloqueaLDV(hexagono, origen, destino);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of masObstaculizaLDVresuelve method, of class Mapa.
-     */
-    //@Test
-    public void testMasObstaculizaLDVresuelve() {
-        System.out.println("masObstaculizaLDVresuelve");
-        Phexagono a = null;
-        Phexagono b = null;
-        Phexagono origen = null;
-        Phexagono destino = null;
-        Mapa instance = null;
-        int expResult = 0;
-        int result = instance.masObstaculizaLDVresuelve(a, b, origen, destino);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
+    
     /**
      * Test of valido method, of class Mapa.
      */

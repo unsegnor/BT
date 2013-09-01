@@ -12,10 +12,13 @@ import java.util.ArrayList;
  */
 public interface I_Grafo {
 
-    public I_Coste calcularCosteReal(I_Nodo a, I_Nodo b);
-
     public I_Coste calcularCosteHeuristico(I_Nodo a, I_Nodo b);
     
+    /**
+     * Esta función debe devolver los vecinos del nodo con el costeReal calculado
+     * @param nodo
+     * @return 
+     */
     public ArrayList<I_Nodo> getVecinos(I_Nodo nodo);
     
 }

@@ -6,6 +6,7 @@ package AestrellaAndar;
 
 import bt.Mapa;
 import bt.Phexagono;
+import bt.Posicion;
 
 /**
  *
@@ -13,12 +14,11 @@ import bt.Phexagono;
  */
 public class AstrellaAndar {
     
-    public Aestrella.Resultado calcularRutaAndando(Phexagono a, int caraA, Phexagono b, int caraB, Mapa mapa){
+    public Aestrella.Resultado calcularRutaAndando(Posicion a, Posicion b, Mapa mapa){
         Aestrella.Resultado respuesta = new Aestrella.Resultado();
         
         //Cargamos grafo de andar
         GrafoAndar grafo = new GrafoAndar(mapa);
-        
         
         
         return respuesta;

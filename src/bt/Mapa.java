@@ -1038,7 +1038,7 @@ public class Mapa {
     }
 
 
-    int calcularCosteCambio(Phexagono hex, Phexagono destino) {
+    public int calcularCosteCambio(Phexagono hex, Phexagono destino) {
         //Coste total
         int costeTotal = 1;
 

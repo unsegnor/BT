@@ -40,9 +40,13 @@ public class Aestrella {
                     //Sino lo calculamos y lo pasamos a la lista válida
 
 
+                    //Los vecinos vienen con el costeReal calculado
+                    I_Coste costeReal = vecino.getCosteReal();
+
+
                     //Calcular coste real hasta el vecino
-                    I_Coste costeReal = actual.getCosteReal().sumar(grafo.calcularCosteReal(actual, vecino));
-                    vecino.setCosteReal(costeReal);
+                    //I_Coste costeReal = actual.getCosteReal().sumar(grafo.calcularCosteReal(actual, vecino));
+                    //vecino.setCosteReal(costeReal);
 
                     //Calcular coste heurístico
                     I_Coste costeHeuristico = grafo.calcularCosteHeuristico(vecino, destino);
@@ -135,9 +139,13 @@ public class Aestrella {
                     //Sino lo calculamos y lo pasamos a la lista válida
 
 
+                    //Los vecinos vienen con el costeReal calculado
+                    I_Coste costeReal = vecino.getCosteReal();
+
+
                     //Calcular coste real hasta el vecino
-                    I_Coste costeReal = actual.getCosteReal().sumar(grafo.calcularCosteReal(actual, vecino));
-                    vecino.setCosteReal(costeReal);
+                    //I_Coste costeReal = actual.getCosteReal().sumar(grafo.calcularCosteReal(actual, vecino));
+                    //vecino.setCosteReal(costeReal);
 
                     //En esta ocasión no nos inmporta el coste heurístico
                     //I_Coste costeHeuristico = grafo.calcularCosteHeuristico(vecino, destino);

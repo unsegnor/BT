@@ -110,19 +110,6 @@ public class AestrellaTest {
         }
 
         @Override
-        public I_Coste calcularCosteReal(I_Nodo a, I_Nodo b) {
-            //El coste real para moverse de a a b es simplemente el valor de b
-            NodoTest nb = (NodoTest) b;
-
-            //Valor de la posición que indica nb
-            int valor = mapa[nb.pi][nb.pj].valor;
-
-            CosteTest respuesta = new CosteTest(valor);
-
-            return respuesta;
-        }
-
-        @Override
         public I_Coste calcularCosteHeuristico(I_Nodo a, I_Nodo b) {
             //La distancia entre los puntos que describen
             NodoTest na = (NodoTest) a;
@@ -152,21 +139,25 @@ public class AestrellaTest {
             //Calcular nodo de encima
             if (pi > 0) {
                 NodoTest naux = mapa[pi - 1][pj];
+                naux.setCosteReal(nodo.getCosteReal().sumar(new CosteTest(naux.valor)));
                 respuesta.add(naux);
             }
             //Calcular nodo de abajo
             if (pi + 1 < alto) {
                 NodoTest naux = mapa[pi + 1][pj];
+                naux.setCosteReal(nodo.getCosteReal().sumar(new CosteTest(naux.valor)));
                 respuesta.add(naux);
             }
             //Calcular nodo izquierdo
             if (pj > 0) {
                 NodoTest naux = mapa[pi][pj - 1];
+                naux.setCosteReal(nodo.getCosteReal().sumar(new CosteTest(naux.valor)));
                 respuesta.add(naux);
             }
             //Calcular nodo derecho
             if (pj + 1 < ancho) {
                 NodoTest naux = mapa[pi][pj + 1];
+                naux.setCosteReal(nodo.getCosteReal().sumar(new CosteTest(naux.valor)));
                 respuesta.add(naux);
             }
 
