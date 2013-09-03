@@ -18,31 +18,31 @@ import bt.Reglas.Fase;
 public class EstadoDeJuego {
     
     //Mapa del momento
-    Mapa mapa;
+    public Mapa mapa;
     
     //Fase
-    Fase fase;
+    public Fase fase;
     
     //Iniciativa??? necesaria para saber los siguientes jugadores
-    int orden[];
+    public int orden[];
     
     //Jugador actual
-    int jugador;
+    public int jugador;
     
     //Jugadores siguientes
-    int siguientes[];
+    public int siguientes[];
     
     //Estado de Jugadores
-    EstadoDeJugador jugadores[];
+    public EstadoDeJugador jugadores[];
     
     //Datos de los mechs
-    DataMechs datos_mechs;
+    public DataMechs datos_mechs;
     
     //Datos de iniciativa
-    int[] iniciativa;
+    public int[] iniciativa;
     
     //Definiciones de meches por jugador
-    DataDefMech[] datos_def_mechs;
+    public DataDefMech[] datos_def_mechs;
     
     public DataMech getMechActual(){
         DataMech respuesta = null;

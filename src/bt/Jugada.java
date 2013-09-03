@@ -56,7 +56,10 @@ public class Jugada implements Runnable {
         //Obtener mejor estrategia hasta el momento
         //Obtener mejor siguiente movimiento hasta el momento
         Accion accion = SunTzu.siguienteAccion(i_jugador, c_fase);
+        System.out.println("Accion escogida:" + accion.toString());
         //Escribirla
         Escritor.escribeAccion(i_jugador, accion);
+        tiempo_consumido = System.currentTimeMillis() - tiempo_inicio;
+        System.out.println("Hecho en " + tiempo_consumido + "ms");
     }
 }

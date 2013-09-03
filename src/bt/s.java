@@ -12,10 +12,10 @@ import java.util.Random;
  */
 public class s {
     
-    Random r = new Random(System.currentTimeMillis());
+    static Random r = new Random(System.currentTimeMillis());
     
     //Devuelve true con una probabilidad probabilidad
-    public boolean p(float probabilidad){
+    public static boolean p(float probabilidad){
         return (r.nextFloat() < probabilidad);
     }
     

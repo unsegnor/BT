@@ -14,7 +14,7 @@ import java.util.PriorityQueue;
  */
 public class Aestrella {
 
-    public Resultado calcular(I_Grafo grafo, I_Nodo origen, I_Nodo destino) {
+    public static Resultado calcular(I_Grafo grafo, I_Nodo origen, I_Nodo destino) {
         Resultado respuesta = new Resultado();
 
         I_Nodo actual = origen;
@@ -27,7 +27,7 @@ public class Aestrella {
 
 
         //Hasta que alcancemos el destino hacer
-        while (actual != null && actual != destino) {
+        while (actual != null && !actual.equals(destino)) {
             //Abrir el nodo actual y obtener sus vecinos
             ArrayList<I_Nodo> vecinos = grafo.getVecinos(actual);
             ArrayList<I_Nodo> vecinosValidos = new ArrayList<I_Nodo>();
@@ -58,6 +58,10 @@ public class Aestrella {
 
                     //Añadir a los vecinos válidos
                     vecinosValidos.add(vecino);
+
+                    //Establecemos el padre de los nodos vecinos para saber de dónde vienen
+                    vecino.setPadre(actual);
+
                 }
             }
 
@@ -71,49 +75,61 @@ public class Aestrella {
             actual = abiertos.poll();
         }
 
-        //Anotar el coste real de la ruta
-        respuesta.coste = actual.getCosteReal();
+        //Si actual es distinto de null es que hemos encontrado ruta
+        if (actual != null) {
 
-        //Componer la ruta de respuesta
-        respuesta.ruta = new ArrayList<I_Nodo>();
+            //Anotar el coste real de la ruta
+            respuesta.setCoste(actual.getCosteReal());
+
+            //Componer la ruta de respuesta
+            respuesta.setRuta(new ArrayList<I_Nodo>());
 
 
-        //Incluimos el destino
-        respuesta.ruta.add(actual);
+            //Incluimos el destino
+            respuesta.getRuta().add(actual);
 
-        //Volvemos hacia atrás desde el destino por el camino más corto
-        while (actual != origen) {
-            //Obtener vecinos del siguiente
-            ArrayList<I_Nodo> vecinos = grafo.getVecinos(actual);
+            //Volvemos hacia atrás desde el destino por el camino más corto
+            while (actual != origen) {
+                //Obtener vecinos del siguiente
+                ArrayList<I_Nodo> vecinos = grafo.getVecinos(actual);
 
-            //De los vecinos escogemos aquél que esté en la lista de cerrados y tenga menor costeReal
-            I_Coste menorCosteReal = actual.getCosteReal();
-            I_Nodo siguiente = null;
-            for (I_Nodo vecino : vecinos) {
-                if (cerrados.contains(vecino)) {
-                    if (vecino.getCosteReal().compareTo(menorCosteReal) < 0) {
-                        menorCosteReal = vecino.getCosteReal();
-                        siguiente = vecino;
+                //De los vecinos escogemos aquél que esté en la lista de cerrados y tenga menor costeReal
+                I_Coste menorCosteReal = actual.getCosteReal();
+                I_Nodo siguiente = null;
+                for (I_Nodo vecino : vecinos) {
+                    //Recuperamos el vecino de la lista de cerrados
+                    int pos = cerrados.indexOf(vecino);
+                    if (pos != -1) {
+                        I_Nodo vecino_recuperado = cerrados.get(pos);
+                        //Tenemos que comprobar que efectivamente el coste desde el vecino_recuperado al actual sea el que pone
+                        if (vecino_recuperado.getCosteReal().compareTo(menorCosteReal) < 0) {
+                            menorCosteReal = vecino_recuperado.getCosteReal();
+                            siguiente = vecino_recuperado;
+                        }
+
                     }
                 }
+
+                //Ya tenemos al siguiente
+                respuesta.getRuta().add(siguiente);
+
+                //Tratamos ahora al siguiente
+                actual = siguiente;
             }
 
-            //Ya tenemos al siguiente
-            respuesta.ruta.add(siguiente);
+            //Aquí ya tenemos la ruta pero al revés, le damos la vuelta
+            Collections.reverse(respuesta.getRuta());
 
-            //Tratamos ahora al siguiente
-            actual = siguiente;
+            //Voilà
+        } else {
+            respuesta = null; //Devolvemos null para indicar que no se ha encontrado la ruta
         }
 
-        //Aquí ya tenemos la ruta pero al revés, le damos la vuelta
-        Collections.reverse(respuesta.ruta);
-
-        //Voilà
 
         return respuesta;
     }
 
-    public NodosEnRango getNodosEnRango(I_Grafo grafo, I_Nodo origen, I_Coste coste_maximo) {
+    public static NodosEnRango getNodosEnRango(I_Grafo grafo, I_Nodo origen, I_Coste coste_maximo) {
         NodosEnRango respuesta = new NodosEnRango();
 
         I_Nodo actual = origen;
@@ -157,6 +173,9 @@ public class Aestrella {
 
                     //Añadir a los vecinos válidos
                     vecinosValidos.add(vecino);
+
+                    //Establecemos el padre de los nodos vecinos para saber de dónde vienen
+                    vecino.setPadre(actual);
                 }
             }
 
@@ -169,6 +188,8 @@ public class Aestrella {
             //Seleccionamos y sacamos el nuevo nodo actual
             actual = abiertos.poll();
         }
+
+
 
         /* 
          * En este momento hemos seleccionado el primer nodo cuyo coste supera el coste máximo permitido
@@ -184,22 +205,22 @@ public class Aestrella {
         return respuesta;
     }
 
-    public Resultado rutaHasta(I_Grafo grafo, I_Nodo destino, NodosEnRango lista) {
+    public static Resultado rutaHasta(I_Grafo grafo, I_Nodo destino, NodosEnRango lista) {
         Resultado respuesta = new Resultado();
 
 
         //Anotar el coste real de la ruta
-        respuesta.coste = destino.getCosteReal();
+        respuesta.setCoste(destino.getCosteReal());
 
         I_Nodo actual = destino;
         I_Nodo origen = lista.origen;
 
         //Componer la ruta de respuesta
-        respuesta.ruta = new ArrayList<I_Nodo>();
+        respuesta.setRuta(new ArrayList<I_Nodo>());
 
 
         //Incluimos el destino
-        respuesta.ruta.add(actual);
+        respuesta.getRuta().add(actual);
 
         //Volvemos hacia atrás desde el destino por el camino más corto
         while (actual != origen) {
@@ -219,14 +240,14 @@ public class Aestrella {
             }
 
             //Ya tenemos al siguiente
-            respuesta.ruta.add(siguiente);
+            respuesta.getRuta().add(siguiente);
 
             //Tratamos ahora al siguiente
             actual = siguiente;
         }
 
         //Aquí ya tenemos la ruta pero al revés, le damos la vuelta
-        Collections.reverse(respuesta.ruta);
+        Collections.reverse(respuesta.getRuta());
 
         //Voilà
 

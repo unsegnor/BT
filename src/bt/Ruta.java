@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class Ruta {
     
-    private ArrayList<Paso> pasos;
+    private ArrayList<Paso> pasos = new ArrayList<Paso>();
 
     /**
      * @return the pasos

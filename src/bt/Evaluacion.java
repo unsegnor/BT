@@ -12,9 +12,9 @@ class Evaluacion<T> {
     
     T cosa;
     
-    double valor = 0;
+    I_Eval valor;
     
-    public Evaluacion(T cosa, double valor){
+    public Evaluacion(T cosa, I_Eval valor){
         this.cosa = cosa;
         this.valor = valor;
     }

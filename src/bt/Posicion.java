@@ -14,6 +14,23 @@ public class Posicion {
     private Phexagono hexagono;
     private int lado;
 
+    Posicion(){}
+    
+    Posicion(int columna, int fila, int cara){
+        Phexagono h = new Phexagono(columna, fila);
+        init(h,cara);
+    }
+    
+    Posicion(Phexagono hexagono, int cara){
+        init(hexagono, cara);
+        
+    }
+    
+    private void init(Phexagono hexagono, int lado){
+        this.hexagono = hexagono;
+        this.lado = lado;
+    }
+    
     /**
      * @return the hexagono
      */
@@ -117,6 +134,25 @@ public class Posicion {
         //Mismo hexágono
         respuesta.setHexagono(this.hexagono);
 
+        return respuesta;
+    }
+    
+    public static int distanciaEntreCaras(int caraA, int caraB){
+        
+        //TODO resumir en fórmula matemática
+        
+        int respuesta = 0;
+        int diff = Math.abs(caraA-caraB);
+        if(diff==5){//Será que está comprobando entre 1 y 6
+            respuesta =1;
+        }else if(diff ==4){
+            //Está comprobando entr 2 y 6 o entre 1 y 5
+            respuesta = 2;
+        }else{
+            respuesta = diff;
+        }
+        
+        
         return respuesta;
     }
 }

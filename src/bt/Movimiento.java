@@ -35,7 +35,7 @@ class Movimiento extends Accion {
     private int lado_destino;
     
     //Usa MASC?
-    private boolean usaMASC;
+    private boolean usaMASC = false;;
 
     /**
      * @return the tipo

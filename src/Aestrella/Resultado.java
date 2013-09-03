@@ -12,8 +12,36 @@ import java.util.ArrayList;
  */
 public class Resultado {
     
-    I_Coste coste;
+    private I_Coste coste;
     
-    ArrayList<I_Nodo> ruta;
+    private ArrayList<I_Nodo> ruta;
+
+    /**
+     * @return the coste
+     */
+    public I_Coste getCoste() {
+        return coste;
+    }
+
+    /**
+     * @param coste the coste to set
+     */
+    public void setCoste(I_Coste coste) {
+        this.coste = coste;
+    }
+
+    /**
+     * @return the ruta
+     */
+    public ArrayList<I_Nodo> getRuta() {
+        return ruta;
+    }
+
+    /**
+     * @param ruta the ruta to set
+     */
+    public void setRuta(ArrayList<I_Nodo> ruta) {
+        this.ruta = ruta;
+    }
     
 }

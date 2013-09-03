@@ -8,10 +8,23 @@ import bt.Reglas.tiposDePaso;
 
 /**
  * Representa un paso en la ruta del movimiento.
+ *
  * @author Víctor
  */
-class Paso {
+public class Paso {
 
+    //Tipo de paso
+    private tiposDePaso tipoDePaso;
+    //Número de veces o Lado, debe ser 1 si es cuerpo a tierra, si es levantarse indica el lado
+    private int veces_o_lado;
+
+    public Paso(){}
+    
+    public Paso (tiposDePaso tipo, int veces){
+        this.tipoDePaso = tipo;
+        this.veces_o_lado = veces;
+    }
+    
     /**
      * @return the tipoDePaso
      */
@@ -24,7 +37,7 @@ class Paso {
      */
     public void setTipoDePaso(tiposDePaso tipoDePaso) {
         this.tipoDePaso = tipoDePaso;
-        if (this.tipoDePaso == tiposDePaso.CuerpoATierra){
+        if (this.tipoDePaso == tiposDePaso.CuerpoATierra) {
             veces_o_lado = 1;
         }
     }
@@ -42,42 +55,35 @@ class Paso {
     public void setVeces_o_lado(int veces_o_lado) {
         this.veces_o_lado = veces_o_lado;
     }
-    
-    //Tipo de paso
-    private tiposDePaso tipoDePaso;
-    
-    //Número de veces o Lado, debe ser 1 si es cuerpo a tierra, si es levantarse indica el lado
-    private int veces_o_lado;
-    
+
     @Override
-    public String toString(){
-    
+    public String toString() {
+
         StringBuilder sb = new StringBuilder();
-        
-        switch(tipoDePaso){
+
+        switch (tipoDePaso) {
             case Adelante:
                 sb.append("Adelante");
-            break;
+                break;
             case Atras:
                 sb.append("Atras");
-            break;
+                break;
             case Izquierda:
                 sb.append("Izquierda");
-            break;
+                break;
             case Derecha:
                 sb.append("Derecha");
-            break;
+                break;
             case Levantarse:
                 sb.append("Levantarse");
-            break;
+                break;
             case CuerpoATierra:
                 sb.append("Cuerpo A Tierra");
-            break;      
+                break;
         }
         sb.append("\n");
         sb.append(this.getVeces_o_lado());
-        
+
         return sb.toString();
     }
-    
 }

@@ -2,17 +2,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package Aestrella;
+package bt;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  *
  * @author Víctor
  */
-public class NodosEnRango {
+class Condiciones {
     
-    public I_Nodo origen;
-    public ArrayList<I_Nodo> lista;
+    Comparator<PosEval> comparador_de_posiciones;
+    boolean armas;
     
 }

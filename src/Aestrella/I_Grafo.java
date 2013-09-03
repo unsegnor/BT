@@ -20,5 +20,7 @@ public interface I_Grafo {
      * @return 
      */
     public ArrayList<I_Nodo> getVecinos(I_Nodo nodo);
+
+    public I_Coste calcularCosteReal(I_Nodo actual, I_Nodo vecino);
     
 }

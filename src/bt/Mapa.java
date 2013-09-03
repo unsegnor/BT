@@ -33,7 +33,7 @@ public class Mapa {
         }
         return r;
     }
-    
+
     /**
      * Devuelve el lado desde el que se encara p_fin desde p_inicio
      *
@@ -191,77 +191,78 @@ public class Mapa {
     public double distancia(Phexagono a, Phexagono b) {
         return distancia(puntoEspacial(a), puntoEspacial(b));
     }
-    
-    public boolean esImpar(Phexagono hexagono){
-        return (hexagono.getColumna()%2==1);
+
+    public boolean esImpar(Phexagono hexagono) {
+        return (hexagono.getColumna() % 2 == 1);
     }
-    
-    public int distanciaCasillas(Phexagono a, Phexagono b){
+
+    public int distanciaCasillas(Phexagono a, Phexagono b) {
         int d = Math.abs(a.getColumna() - b.getColumna());
-        
-        if(esImpar(a)){
 
-            if(esImpar(b)){
-                
-                int d2 = (Math.abs(a.getFila()-b.getFila()) - d/2);
-                
-                if(d2>0) d+= d2;
-            }
-            
-            else
-            {
-                if(b.getFila()<a.getFila()){
-                
-                int d2 = Math.abs(b.getFila()-a.getFila())-((d+1)/2);
-                
-                if(d2>0) d+= d2;
-                
+        if (esImpar(a)) {
+
+            if (esImpar(b)) {
+
+                int d2 = (Math.abs(a.getFila() - b.getFila()) - d / 2);
+
+                if (d2 > 0) {
+                    d += d2;
                 }
-                else
-                {
-                int d2 = Math.abs(b.getFila()-a.getFila())-((d-1)/2);
-                
-                if(d2>0) d+= d2;
-                       
-                    
+            } else {
+                if (b.getFila() < a.getFila()) {
+
+                    int d2 = Math.abs(b.getFila() - a.getFila()) - ((d + 1) / 2);
+
+                    if (d2 > 0) {
+                        d += d2;
+                    }
+
+                } else {
+                    int d2 = Math.abs(b.getFila() - a.getFila()) - ((d - 1) / 2);
+
+                    if (d2 > 0) {
+                        d += d2;
+                    }
+
+
                 }
-                
+
             }
-            
+
+        } else {
+
+            if (esImpar(b)) {
+
+                if (b.getFila() >= a.getFila()) {
+
+                    int d2 = Math.abs(b.getFila() - a.getFila()) - ((d + 1) / 2);
+
+                    if (d2 > 0) {
+                        d += d2;
+                    }
+                } else {
+
+                    int d2 = Math.abs(b.getFila() - a.getFila()) - ((d - 1) / 2);
+
+                    if (d2 > 0) {
+                        d += d2;
+                    }
+
+
+                }
+
+            } else {
+                int d2 = (Math.abs(a.getFila() - b.getFila()) - d / 2);
+
+                if (d2 > 0) {
+                    d += d2;
+                }
+
+
+            }
+
         }
-        else
-        {
-         
-         if(esImpar(b)){
-                
-                if(b.getFila()>=a.getFila()){
 
-                int d2 = Math.abs(b.getFila()-a.getFila())-((d+1)/2);
-                
-                if(d2>0) d+= d2;
-                }
-                else
-                {
-
-                int d2 = Math.abs(b.getFila()-a.getFila())-((d-1)/2);
-                
-                if(d2>0) d+= d2;
-                       
-                    
-                }
-                
-            }
-            else
-            {
-                int d2 = (Math.abs(a.getFila()-b.getFila()) - d/2);
-                
-                if(d2>0) d+= d2;
-                
-                
-            }   
-            
-        }
-            
         return d;
     }
 
@@ -423,7 +424,6 @@ public class Mapa {
     }
     //Indica cuál de los dos hexágonos obstaculiza más la LDV
     //0 es que obstaculizan por igual, 1 que a obstaculiza más y 2 que b obstaculiza más
-
     Random rand = new Random();
 
     //Indica si un hexágono es válido o está fuera del mapa
@@ -433,6 +433,149 @@ public class Mapa {
 
     public boolean valido(Phexagono h) {
         return valido(h.getColumna(), h.getFila());
+    }
+
+    /**
+     * Devuelve la cara necesaria para encarar desde el origen al destino, si
+     * están en la misma fila entonces devuelve cualquiera de las dos
+     * aleatoriamente
+     *
+     * @param origen
+     * @param destino
+     * @return
+     */
+    public int encararA(Phexagono origen, Phexagono destino) {
+        int respuesta = -1;
+
+
+        //Trazar línea entre los hexágonos
+        Punto p_origen = puntoEspacial(origen);
+        Punto p_destino = puntoEspacial(destino);
+        Segmento recta = new Segmento(p_origen, p_destino);
+
+        //Valores iniciales
+        Phexagono actual = origen;
+
+        //Determinar la pendiente de la recta
+        double pendiente = recta.m;
+        double pu = 1.7320508; //pendiente umbral
+
+
+        //Si no son el mismo
+        if (actual.getColumna() != destino.getColumna() || actual.getFila() != destino.getFila()) {
+
+            //Obtener segmentos de las caras
+            Segmento[] segmento_caras = this.caraEspacio(actual);
+            Punto salida = null;
+            int contador_cara = 1;
+
+            //Recorremos las caras hasta que corta con alguna y tenemos un punto de salida
+            while (salida == null && contador_cara <= 6) {
+                salida = recta.corte(segmento_caras[contador_cara - 1]);
+                contador_cara++;
+            }
+
+
+            //salida contiene el punto de corte, ahora hay que ver si corresponde con un vértice
+            //Obtener vértices para comparar
+            Punto[] vertices = vertices(actual.getColumna(), actual.getFila());
+            int v = 0;
+            int verticecoincidente = -1;
+            for (v = 0; v < 6; v++) {
+                //TODO ajustar factor de error para que coincida con 
+                if (Op.iguales(salida.x, vertices[v].x, 0.1) && Op.iguales(salida.y, vertices[v].y)) {
+                    //Coincide
+                    verticecoincidente = v;
+                }
+            }
+            //Aquí verticecoincidente tiene el vértice coincidente o -1 si no coincide con ninguno
+            if (verticecoincidente == -1) {
+                //No coincide con ningún vértice así que cara_contador es la cara por la que sale
+                //Así determinamos el siguiente hexágono
+                respuesta = contador_cara - 1;
+            } else {
+                //Si coincide con un vértice pueden ser varias cosas dependiendo de la pendiente de la recta
+                //Miremos por casos
+                if (verticecoincidente == 0) {
+                    //Si la pendiente es menor que -1 entonces pasamos al de arriba (cara 1)
+                    if (Op.menorque(pendiente, -pu)) {
+                        respuesta = 1;
+                    } else if (Op.mayorque(pendiente, -pu)) {
+                        //Si es mayor que -1 pasamos al de la cara 6
+                        respuesta = 6;
+                    } else {
+                        //Si es igual a -1 entonces elegimos aleatoriamente una de las dos caras (cara 1 o cara 6)
+                        respuesta = s.p(0.5f) ? 1 : 6;
+                    }
+
+                } else if (verticecoincidente == 3) {
+                    //Si la pendiente es menor que -1 entonces pasamos al de arriba (cara 1)
+                    if (Op.mayorque(pendiente, -pu)) {
+                        respuesta = 3;
+                    } else if (Op.menorque(pendiente, -pu)) {
+                        //Si es mayor que -1 pasamos al de la cara 6
+                        respuesta = 4;
+                    } else {
+                        respuesta = s.p(0.5f) ? 3 : 4;
+                    }
+
+                } else if (verticecoincidente == 1) {
+                    //Si la pendiente es menor que -1 entonces pasamos al de arriba (cara 1)
+                    if (Op.mayorque(pendiente, pu)) {
+                        respuesta = 1;
+                    } else if (Op.menorque(pendiente, pu)) {
+                        //Si es mayor que -1 pasamos al de la cara 6
+                        respuesta = 2;
+                    } else {
+                        respuesta = s.p(0.5f) ? 1 : 2;
+                    }
+
+                } else if (verticecoincidente == 4) {
+                    //Si la pendiente es menor que -1 entonces pasamos al de arriba (cara 1)
+                    if (Op.mayorque(pendiente, pu)) {
+                        respuesta = 4;
+
+                    } else if (Op.menorque(pendiente, pu)) {
+                        //Si es mayor que -1 pasamos al de la cara 6
+                        respuesta = 5;
+
+                    } else {
+                        respuesta = s.p(0.5f) ? 4 : 5;
+                    }
+
+                } else if (verticecoincidente == 2) {
+                    //Si la pendiente es menor que -1 entonces pasamos al de arriba (cara 1)
+                    if (Op.mayorque(pendiente, 0)) {
+                        respuesta = 2;
+
+                    } else if (Op.menorque(pendiente, 0)) {
+                        //Si es mayor que -1 pasamos al de la cara 6
+                        respuesta = 3;
+
+                    } else {
+                        respuesta = s.p(0.5f) ? 2 : 3;
+                    }
+
+                } else if (verticecoincidente == 5) {
+                    //Si la pendiente es menor que -1 entonces pasamos al de arriba (cara 1)
+                    if (Op.mayorque(pendiente, 0)) {
+                        respuesta = 5;
+
+                    } else if (Op.menorque(pendiente, 0)) {
+                        //Si es mayor que -1 pasamos al de la cara 6
+                        respuesta = 6;
+
+                    } else {
+                        respuesta = s.p(0.5f) ? 5 : 6;
+                    }
+
+                }
+
+            }
+
+        }
+
+        return respuesta;
     }
 
     //Calcula y devuelve las posiciones de los terrenos intermedios entre dos terrenos
@@ -1037,7 +1180,6 @@ public class Mapa {
         return lista;
     }
 
-
     public int calcularCosteCambio(Phexagono hex, Phexagono destino) {
         //Coste total
         int costeTotal = 1;
@@ -1122,7 +1264,7 @@ public class Mapa {
         }
 
         //Hemos terminado
-        
+
         return respuesta;
     }
 

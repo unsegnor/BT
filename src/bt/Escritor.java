@@ -107,7 +107,7 @@ public class Escritor {
                     bw.write(dm.getLado_destino() + "\n");
 
                     //Escribir si va a usar MASC
-                    bw.write(dm.isUsaMASC() ? "True" : "False");
+                    bw.write(dm.isUsaMASC() ? "True\n" : "False\n");
 
                     //Número de pasos
                     int npasos = dm.getNumero_de_pasos();

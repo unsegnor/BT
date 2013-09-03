@@ -4,7 +4,12 @@
  */
 package bt;
 
+import Aestrella.I_Nodo;
+import Aestrella.NodosEnRango;
+import AestrellaAndar.CosteAndar;
+import AestrellaAndar.NodoAndar;
 import bt.Reglas.Fase;
+import bt.Reglas.tiposDeMovimiento;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -32,21 +37,46 @@ public class SunTzu {
         Accion resultado = null;
 
         System.out.println("Leido estado. Jugador " + jugador + " fase " + fase.name());
+
+        //Determinamos las condiciones que se deben tener en cuenta
+        Condiciones condiciones = new Condiciones();
+
+
+
+
+
+        //Determinamos la forma de comparar las posiciones según si tenemos o no Armas de Fuego
+
+        //Comprobar si tenemos o no potencia de fuego
+
+        ComparaPosicionesConArmas conArmas = new ComparaPosicionesConArmas();
+        ComparaPosicionesSinArmas sinArmas = new ComparaPosicionesSinArmas();
+
+
+        if (estado.datos_def_mechs[jugador].getnArmas() == 0) {
+            condiciones.comparador_de_posiciones = sinArmas;
+            condiciones.armas = false;
+        } else {
+            condiciones.comparador_de_posiciones = conArmas;
+            condiciones.armas = true;
+        }
+
+
         switch (fase) {
             case Movimiento:
-                resultado = responderAMovimiento(estado);
+                resultado = responderAMovimiento(estado, condiciones);
                 break;
             case Reaccion:
-                resultado = responderAReaccion(estado);
+                resultado = responderAReaccion(estado, condiciones);
                 break;
             case AtaqueArmas:
-                resultado = responderAAtaqueArmas(estado);
+                resultado = responderAAtaqueArmas(estado, condiciones);
                 break;
             case AtaqueFisico:
-                resultado = responderAAtaqueFisico(estado);
+                resultado = responderAAtaqueFisico(estado, condiciones);
                 break;
             case FinalTurno:
-                resultado = responderAFinalTurno(estado);
+                resultado = responderAFinalTurno(estado, condiciones);
                 break;
         }
 
@@ -58,6 +88,180 @@ public class SunTzu {
         return resultado;
     }
 
+    private static Accion responderAMovimiento(EstadoDeJuego estado, Condiciones condiciones) {
+        Movimiento respuesta = null;
+
+
+        //TODO Si somos los últimos o primeros en mover debe influir en nuestra decisión
+
+
+
+        //Comprobar posiciones de los mechs enemigos operativos
+        //y la nuestra
+
+        ArrayList<DataMech> enemigos_operativos = new ArrayList<DataMech>();
+        DataMech mech_actual = null;
+
+        DataMech[] mechs = estado.datos_mechs.getMechs();
+
+        for (DataMech mech : mechs) {
+            if (mech.getnJugador() == estado.jugador) {
+                mech_actual = mech;
+            } else {
+                if (mech.isOperativo()) {
+                    enemigos_operativos.add(mech);
+                }
+            }
+        }
+
+
+
+        ArrayList<PosicionAccion> posiciones_alcanzables;
+
+        //Si no tenemos armas
+        if (!condiciones.armas) {
+
+            DataMech enemigo = enemigos_operativos.get(0);
+
+            Posicion p_enemigo = new Posicion(enemigo.getColumna(), enemigo.getFila(), enemigo.getEncaramientoMech());
+
+            int epandar = estado.datos_def_mechs[enemigo.getnJugador()].getPuntosMovAndando();
+            int epcorrer = estado.datos_def_mechs[enemigo.getnJugador()].getPuntosMovCorriendo();
+            int epsaltar = estado.datos_def_mechs[enemigo.getnJugador()].getPuntosMovSaltando();
+
+            int max_radio = Math.max(epandar, Math.max(epcorrer, epsaltar));
+
+            //Buscar la mejor casilla del mapa entre las cercanas al enemigo
+            //Seleccionar las casillas cercanas al enemigo
+            ArrayList<Phexagono> cercanas = estado.mapa.cercanas(p_enemigo.getHexagono(), max_radio);
+
+
+            //Obtenemos las posiciones alcanzables por el enemigo
+            posiciones_alcanzables = obtenerPosicionesAlcanzables(enemigo, estado);
+
+        } else {
+            posiciones_alcanzables = obtenerPosicionesAlcanzables(mech_actual, estado);
+        }
+
+        Posicion p_actual = new Posicion(mech_actual.getColumna(), mech_actual.getFila(), mech_actual.getEncaramientoMech());
+
+
+        //Evaluar todas las posiciones y quedarnos con la mejor, incluida la actual
+        PosEval mejor = evaluarPosicion(p_actual, estado, condiciones);
+        PosicionAccion mejorPA = new PosicionAccion(p_actual, tiposDeMovimiento.Inmovil);
+        for (PosicionAccion pa : posiciones_alcanzables) {
+            boolean valida = true;
+            //Descartamos las posiciones en las que hay un enemigo
+            for (DataMech enemigo : enemigos_operativos) {
+                if (pa.posicion.getHexagono().getColumna() == enemigo.getColumna()
+                        && pa.posicion.getHexagono().getFila() == enemigo.getFila()) {
+                    valida = false;
+                }
+
+
+            }
+            if (valida) {
+                //Evaluar la posición
+                PosEval datos_de_posicion = evaluarPosicion(pa.posicion, estado, condiciones);
+
+
+                if (mejor == null) {
+                    mejor = datos_de_posicion;
+                } else {
+                    //Comprobamos si es mejor que la mejor actual
+                    if (condiciones.comparador_de_posiciones.compare(datos_de_posicion, mejor) < 0) {
+
+                        //Si estamos en modo sin armas tenemos que comprobar que efectivamente existe una ruta hasta la casilla 
+                        //ya que el conjunto inicial no se consigue de los sitios a los que podemos acceder sino a los que puede acceder el enemigo.
+                        Aestrella.Resultado rutaAcasilla = AestrellaAndar.AstrellaAndar.calcularRutaAndando(p_actual, pa.posicion, estado);
+
+                        if (!condiciones.armas) {
+                            //Sólo si existe la ruta la tenemos en cuenta
+                            if (rutaAcasilla != null) {
+                                mejor = datos_de_posicion;
+                                mejorPA = pa;
+                            }
+                        } else {
+                            //Si es mejor la sustituimos
+                            mejor = datos_de_posicion;
+                            mejorPA = pa;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        //Ya tenemos la mejor casilla a la que podemos llegar
+
+
+
+        //Comprobamos qué tipo de acción es la que vamos a utilizar y obtenemos la ruta necesaria
+        respuesta = new Movimiento();
+        //Determinamos el tipo de movimiento
+        respuesta.setTipo(mejorPA.tipoMovimiento);
+
+        //Determinamos el objetivo
+        respuesta.setDestino(mejorPA.posicion.getHexagono());
+
+        //Determinamos el lado
+        respuesta.setLado_destino(mejorPA.posicion.getLado());
+
+        //Inicializamos la ruta
+        respuesta.setRuta(new Ruta());
+
+        //Calculamos los puntos máximos de movimiento y en caso necesario cortamos las rutas
+        int pandar = mech_actual.getInformacion_adicional().getPuntos_andar();
+        int pcorrer = mech_actual.getInformacion_adicional().getPuntos_correr();
+        int psaltar = mech_actual.getInformacion_adicional().getPuntos_saltar();
+
+
+
+        switch (mejorPA.tipoMovimiento) {
+            case Andar:
+                //Calculamos la ruta hasta el objetivo 
+                //TODO evitar este cálculo utilizando los conjuntos de antes para saber hasta dónde podemos llegar
+                Aestrella.Resultado r = AestrellaAndar.AstrellaAndar.calcularRutaAndando(p_actual, mejorPA.posicion, estado);
+
+                ArrayList<I_Nodo> nodos_ruta = r.getRuta();
+
+                int lnr = nodos_ruta.size();
+
+                boolean posible = true;
+                Posicion nuevodestino = null;
+
+                //Componer la ruta ( comenzamos en el 1 porque la primera casilla es el orígen y no forma parte de la ruta )
+                for (int i = 1; i < lnr && posible; i++) {
+                    NodoAndar nodo = (NodoAndar) nodos_ruta.get(i);
+                    if (((CosteAndar) nodo.getCosteReal()).getPuntos_de_movimiento() > pandar) {
+                        posible = false;
+                    } else {
+                        respuesta.getRuta().getPasos().add(nodo.getPaso());
+                        nuevodestino = nodo.getPosicion();
+                    }
+                }
+
+                //Si posible es falso significa que hemos acortado la ruta y tenemos que modificar el destino
+                if (!posible) {
+                    respuesta.setDestino(nuevodestino.getHexagono());
+                    respuesta.setLado_destino(nuevodestino.getLado());
+                }
+                break;
+
+            case Correr:
+                break;
+
+            case Saltar:
+                break;
+            case Inmovil:
+                respuesta = new NoMoverse();
+                break;
+        }
+
+
+        return respuesta;
+    }
+
     /**
      * La estrategia para la fase de movimiento será: Buscar la espalda del
      * enemigo Encararlo Buscar cobertura Estar más alto que el enemigo para
@@ -67,12 +271,12 @@ public class SunTzu {
      * @param estado
      * @return
      */
-    private static Accion responderAMovimiento(EstadoDeJuego estado) {
+    private static Accion responderAMovimiento2(EstadoDeJuego estado) {
         Accion resultado = null;
 
 
         //TODO Si somos los últimos o primeros en mover debe influir en nuestra decisión
-        
+
 
 
         //Comprobar posiciones de los mechs enemigos operativos
@@ -120,7 +324,7 @@ public class SunTzu {
                 //Evaluar y añadir como posible
                 System.out.println(p);
                 double bondad = evaluar(p, estado, enemigos_operativos);
-                evaluaciones.add(new Evaluacion(p, bondad));
+                //TODO lo quito por modificación en evaluaciones:    evaluaciones.add(new Evaluacion(p, bondad));
             }
         }
 
@@ -526,7 +730,7 @@ public class SunTzu {
 
             //Si la casilla está al alcance del enemigo entonces tiene penalización
             //porque le puede tomar la espalda
-            if(alalcance){
+            if (alalcance) {
                 min_eval += -p_alcance;
                 //System.out.println("La casilla " + p + " está al alcance del enemigo.");
             }
@@ -554,41 +758,201 @@ public class SunTzu {
         return respuesta;
     }
 
-    private static Accion responderAReaccion(EstadoDeJuego estado) {
-        
+    private static Accion responderAReaccion(EstadoDeJuego estado, Condiciones condiciones) {
+
         //TODO Encarar hacia donde está el enemigo más cercano
-        
+
         //Obtener el mech actual
         DataMech mech_actual = estado.getMechActual();
-        
+
         //Obtener la posición actual
         Phexagono posicion_mech = new Phexagono(mech_actual.getColumna(), mech_actual.getFila());
 
         //Obtener encaramiento actual
         int encaramiento_actual = mech_actual.getEncaramientoTorso();
-        
+
         //Determinamos los encaramientos posibles
         int[] encaramientos = new int[3];
-        
+
         encaramientos[0] = encaramiento_actual;
-        
-        
-        
+
+
+
         //De momento nos quedamos igual
         return new ReaccionarIgual();
-        
-        
+
+
     }
 
-    private static Accion responderAAtaqueArmas(EstadoDeJuego estado) {
+    private static Accion responderAAtaqueArmas(EstadoDeJuego estado, Condiciones condiciones) {
         return new DispararConTodoAlMasCercano(estado);
     }
 
-    private static Accion responderAAtaqueFisico(EstadoDeJuego estado) {
+    private static Accion responderAAtaqueFisico(EstadoDeJuego estado, Condiciones condiciones) {
         return new NoAtacar();
     }
 
-    private static Accion responderAFinalTurno(EstadoDeJuego estado) {
+    private static Accion responderAFinalTurno(EstadoDeJuego estado, Condiciones condiciones) {
         return new NoHacerNada();
+    }
+
+    //Una posición se evalúa respecto de un enemigo
+    private static PosEval evaluarPosicion(Posicion posicion, EstadoDeJuego estado, Condiciones condiciones) {
+        //Tenemos que rellenar el PosEval
+        PosEval respuesta = new PosEval();
+
+        //TODO de momento seleccionamos el enemigo como el mech más cercano operativo que no somos nosotros
+        //O aquel al que más daño podemos hacer...
+
+
+        Posicion p_enemigo;
+
+        //Así que obtenemos todos los mechs operativos distintos de nosotros, sus posiciones y las distancias hasta ellos
+        ArrayList<DataMech> enemigos_operativos = new ArrayList<DataMech>();
+        DataMech mech_actual = null;
+
+        DataMech[] mechs = estado.datos_mechs.getMechs();
+        Mapa mapa = estado.mapa;
+
+        for (DataMech mech : mechs) {
+            if (mech.getnJugador() == estado.jugador) {
+                mech_actual = mech;
+            } else {
+                if (mech.isOperativo()) {
+                    enemigos_operativos.add(mech);
+                    //Obtener la posición
+                    Posicion p = new Posicion(mech.getColumna(), mech.getFila(), mech.getEncaramientoMech());
+                }
+            }
+        }
+
+        DataMech enemigo = enemigos_operativos.get(0);
+        p_enemigo = new Posicion(enemigo.getColumna(), enemigo.getFila(), enemigo.getEncaramientoMech());
+
+        DataMech actual = mech_actual;
+
+        //Si el enemigo ya ha movido evaluamos con su posición y encaramiento
+        boolean hamovido = false;
+
+        int nj = enemigo.getnJugador(); //Número de jugador del enemigo
+
+        if (turno(estado, nj) < turno(estado, estado.jugador)) {
+            hamovido = true;
+        }
+
+        if (hamovido) {
+            respuesta = evaluarPosicionRelativa(mapa, posicion, p_enemigo);
+        } else {
+            //Si aún no ha movido entonces tenemos que evaluar todas las posiciones a las que puede llegar el enemigo y quedarnos con la peor para nosotros
+            ArrayList<PosicionAccion> posiciones_alcanzables = obtenerPosicionesAlcanzables(enemigo, estado);
+
+            PosEval peor = null;
+
+            //Ahora evaluamos nuestra posición en relación a todas las alcanzables por el enemigo y nos quedamos con la peor
+            for (PosicionAccion pene : posiciones_alcanzables) {
+                PosEval eval = evaluarPosicionRelativa(mapa, posicion, pene.posicion);
+
+                if (peor == null) {
+                    peor = eval;
+                } else {
+                    //Comparamos la posición con la peor
+                    if (condiciones.comparador_de_posiciones.compare(eval, peor) > 0) {
+                        //Si la posición que estamos evaluando para nsotros es peor respecto a otra del enemigo, contamos esa evaluación
+                        peor = eval;
+                    }
+                }
+
+            }
+
+            //Devolvemos la peor que hayamos encontrado
+            respuesta = peor;
+        }
+
+        return respuesta;
+    }
+
+    private static PosEval evaluarPosicionRelativa(Mapa mapa, Posicion posicion, Posicion p_enemigo) {
+        PosEval respuesta = new PosEval();
+
+
+        //Distancia
+        respuesta.distancia_al_enemigo = mapa.distanciaCasillas(posicion.getHexagono(), p_enemigo.getHexagono());
+
+        //Lado hacia el enemigo
+        int lado_enemigo = mapa.encararA(posicion.getHexagono(), p_enemigo.getHexagono());
+
+        //Diferencia entre el lado enemigo y el actual 
+        respuesta.giros_para_ecarar_enemigo = Posicion.distanciaEntreCaras(posicion.getLado(), lado_enemigo);
+
+        //Obtener lado hacia el que debe mirar el enemigo para vernos
+        int lado_para_encararnos = mapa.encararA(p_enemigo.getHexagono(), posicion.getHexagono());
+
+        //Calcular la diferencia del encaramiento del enemigo al que nos perjudicaría
+        respuesta.giros_enemigo_para_encararme = Posicion.distanciaEntreCaras(p_enemigo.getLado(), lado_para_encararnos);
+
+
+        //Calcular LDV y rellenar el resto
+        ResultadoLDV rLDV = LDV.calcularLDV(mapa, posicion.getHexagono(), 1, p_enemigo.getHexagono(), 1);
+
+        respuesta.enemigo_visible = rLDV.LDV;
+        respuesta.visible_por_enemigo = rLDV.LDV;
+
+
+        respuesta.enemigo_cubierto = rLDV.CPdirecta;
+        respuesta.ofrece_cobertura = rLDV.CPinversa;
+
+        //Calcular diferencia de nivel
+        Hexagono h_actual = mapa.casilla(posicion.getHexagono());
+        Hexagono h_enemigo = mapa.casilla(p_enemigo.getHexagono());
+
+        respuesta.niveles_por_ecima_del_enemigo = h_actual.getNivel() - h_enemigo.getNivel();
+
+
+        return respuesta;
+    }
+
+    private static ArrayList<PosicionAccion> obtenerPosicionesAlcanzables(DataMech mech_actual, EstadoDeJuego estado) {
+        ArrayList<PosicionAccion> respuesta = new ArrayList<PosicionAccion>();
+
+        //Seleccionar un subconjunto de casillas alrededor del mech (según su capacidad de movimiento) o evaluarlas todas
+        //Phexagono posicion_mech = new Phexagono(mech_actual.getColumna(), mech_actual.getFila());
+        Posicion posicion_mech = new Posicion(mech_actual.getColumna(), mech_actual.getFila(), mech_actual.getEncaramientoMech());
+        int pAndar;
+        int pCorrer;
+        int pSaltar;
+        if (mech_actual.getInformacion_adicional() == null) {
+            int nj = mech_actual.getnJugador();
+            pAndar = estado.datos_def_mechs[nj].getPuntosMovAndando();
+            pCorrer = estado.datos_def_mechs[nj].getPuntosMovCorriendo();
+            pSaltar = estado.datos_def_mechs[nj].getPuntosMovSaltando();
+        } else {
+            pAndar = mech_actual.getInformacion_adicional().getPuntos_andar();
+            pCorrer = mech_actual.getInformacion_adicional().getPuntos_correr();
+            pSaltar = mech_actual.getInformacion_adicional().getPuntos_saltar();
+        }
+
+        //Obtener casillas a las que podemos llegar andando
+        NodosEnRango alcanzables_andando = AestrellaAndar.AstrellaAndar.obtenerEnRango(estado, posicion_mech, pAndar);
+
+        //Generamos las relaciones Posición-Acción
+        ArrayList<I_Nodo> nodos = alcanzables_andando.lista;
+
+        int nnodosAndar = nodos.size();
+
+        for (int i = 0; i < nnodosAndar; i++) {
+            NodoAndar nodo = (NodoAndar) nodos.get(i);
+            Posicion p = nodo.getPosicion();
+            //Añadirla a la lista
+            respuesta.add(new PosicionAccion(p, tiposDeMovimiento.Andar));
+        }
+
+
+        //TODO rellenar aquellas alcanzables corriendo
+
+
+        //TODO rellenar aquellas alcanzables saltando
+
+
+        return respuesta;
     }
 }

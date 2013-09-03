@@ -8,7 +8,7 @@ package bt;
  * Contiene la información de un mech del archivo mechs
  * @author Víctor
  */
-class DataMech {
+public class DataMech {
     
     //Número de jugador que lo controla
     private int nJugador;

@@ -24,4 +24,8 @@ public interface I_Nodo {
     
     public I_Coste getCosteTotal();
     
+    public I_Nodo getPadre();
+    
+    public void setPadre(I_Nodo nodo);
+    
 }

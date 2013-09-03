@@ -13,6 +13,7 @@ public class Nodo implements I_Nodo{
     I_Coste real;
     I_Coste heuristico;
     I_Coste total;
+    I_Nodo padre;
     
     @Override
     public I_Coste getCosteReal() {
@@ -37,6 +38,16 @@ public class Nodo implements I_Nodo{
     @Override
     public I_Coste getCosteTotal() {
         return total;
+    }
+
+    @Override
+    public I_Nodo getPadre() {
+       return this.padre;
+    }
+
+    @Override
+    public void setPadre(I_Nodo nodo) {
+        this.padre = nodo;
     }
     
 }
