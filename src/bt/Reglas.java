@@ -32,6 +32,8 @@ public class Reglas {
     public enum TerrenoTipo{Abierto, Pavimentado, Agua, Pantanoso};
     //Tipos de objeto
     public enum ObjetoTipo{Escombros, BosqueLigero, BosqueDenso, EdificioLigero, EdificioMedio, EdificioPesado, EdificioReforzado, Bunker, Nada};
+    //Tipos de ángulo de disparo
+    public enum tiposAnguloDisparo{Frontal, Izquierdao, Derecho, Posterior, Desconocido};
     
     
     //Esta función devuelve las acciones posibles desde un estado.

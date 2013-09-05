@@ -16,8 +16,14 @@ class ComparaPosicionesSinArmas implements Comparator<PosEval> {
     public int compare(PosEval o1, PosEval o2) {
         int respuesta = 0;
         //No hay armas de fuego así que no tendremos en cuenta la LDV ni la cobertura...etc
+        
         //Mejor cuanto más cerca
         respuesta =  o1.distancia_al_enemigo - o2.distancia_al_enemigo;
+        
+        //Al mismo nivel
+        if (respuesta == 0){
+            respuesta = o1.niveles_por_ecima_del_enemigo - o2.niveles_por_ecima_del_enemigo;
+        }
         
         //Si están igual de cerca, mejor encarar al enemigo
         if(respuesta == 0){

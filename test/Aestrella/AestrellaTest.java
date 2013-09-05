@@ -51,8 +51,8 @@ public class AestrellaTest {
         Aestrella instance = new Aestrella();
         Resultado expResult = null;
         Resultado result = instance.calcular(grafo, origen, destino);
-        System.out.println(result.coste);
-        System.out.println(imprimirRuta(result.ruta));
+        System.out.println(((CosteTest) result.getCoste()).valor);
+        System.out.println(imprimirRuta(result.getRuta()));
     }
 
     private String imprimirMapa(GrafoTest grafo) {
@@ -166,6 +166,16 @@ public class AestrellaTest {
 
         private I_Nodo getNodo(int i, int j) {
             return mapa[i][j];
+        }
+
+        @Override
+        public I_Coste calcularCosteReal(I_Nodo actual, I_Nodo vecino) {
+            NodoTest v = (NodoTest) vecino;
+            
+            
+            CosteTest coste = new CosteTest(v.valor);
+            
+            return coste;
         }
     }
 

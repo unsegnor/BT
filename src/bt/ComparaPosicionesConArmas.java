@@ -48,10 +48,16 @@ class ComparaPosicionesConArmas implements Comparator<PosEval> {
                 respuesta = 1;
             }
         }
+        
 
         //Si empatan escogemos la posición más elevada
         if(respuesta == 0){
             return o2.niveles_por_ecima_del_enemigo - o1.niveles_por_ecima_del_enemigo;
+        }
+        
+        //Si empatan cogemos aquella que más encare al enemigo
+        if(respuesta == 0){
+            return o1.giros_para_ecarar_enemigo - o2.giros_para_ecarar_enemigo;
         }
 
 

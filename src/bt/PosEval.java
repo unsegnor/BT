@@ -23,6 +23,8 @@ class PosEval implements I_Eval {
     int giros_enemigo_para_encararme=0; //Este entero indica los giros necesarios del enemigo para encararme
     int niveles_por_ecima_del_enemigo=0;
     
+    int calor_generado = 0;
+    
     
     
     @Override

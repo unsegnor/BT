@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package AestrellaAndar;
+package AestrellaMov;
 
 import Aestrella.Nodo;
 import bt.Paso;
@@ -12,17 +12,17 @@ import bt.Posicion;
  *
  * @author Víctor
  */
-public class NodoAndar extends Nodo {
+public class NodoMov extends Nodo {
 
     //Identificador de la posicion a la que representa
     private Posicion p;
     private Paso paso;
 
-    NodoAndar(Posicion posicion) {
+    public NodoMov(Posicion posicion) {
         this.p = posicion;
-        this.setCosteReal(new CosteAndar(0));
-        this.setCosteHeuristico(new CosteAndar(0));
-        this.setCosteTotal(new CosteAndar(0));
+        this.setCosteReal(new CosteMov(0));
+        this.setCosteHeuristico(new CosteMov(0));
+        this.setCosteTotal(new CosteMov(0));
     }
 
     /**
@@ -65,11 +65,11 @@ public class NodoAndar extends Nodo {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof NodoAndar)) {
+        if (!(obj instanceof NodoMov)) {
             return false;
         }
 
-        NodoAndar rhs = (NodoAndar) obj;
+        NodoMov rhs = (NodoMov) obj;
 
         return (p.equals(rhs.p));
     }

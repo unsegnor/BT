@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package AestrellaAndar;
+package AestrellaMov;
 
 import Aestrella.I_Coste;
 
@@ -10,18 +10,20 @@ import Aestrella.I_Coste;
  *
  * @author Víctor
  */
-public class CosteAndar implements I_Coste {
+public class CosteMov implements I_Coste {
 
     public boolean imposible = false;
     
     private int puntos_de_movimiento = 0;
     public int chequeos_de_pilotaje = 0;
     
+    public int calor_generado = 0;
+    
     //TODO anotar calor generado???
 
-    CosteAndar(){}
+    CosteMov(){}
     
-    CosteAndar(int puntos) {
+    CosteMov(int puntos) {
         puntos_de_movimiento = puntos;
     }
     
@@ -30,9 +32,9 @@ public class CosteAndar implements I_Coste {
     public I_Coste sumar(I_Coste coste) {
         
         //Casteamos el Coste a un CosteAndar
-        CosteAndar otro = (CosteAndar) coste;
+        CosteMov otro = (CosteMov) coste;
         
-        CosteAndar respuesta = new CosteAndar();
+        CosteMov respuesta = new CosteMov();
         
         respuesta.setPuntos_de_movimiento(getPuntos_de_movimiento() + otro.getPuntos_de_movimiento());
         
@@ -52,7 +54,7 @@ public class CosteAndar implements I_Coste {
         int respuesta = 0;
         
         //Castear el otro
-        CosteAndar otro = (CosteAndar) coste;
+        CosteMov otro = (CosteMov) coste;
         
         //Si es imposible se pone detrás
         if(this.imposible && !otro.imposible){

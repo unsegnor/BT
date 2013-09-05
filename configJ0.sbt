@@ -1,7 +1,7 @@
 configSBT
 True
 True
-3
+1
 True
 True
 True

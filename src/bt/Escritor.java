@@ -128,7 +128,7 @@ public class Escritor {
                     bw.write(dm.getLado_destino() + "\n");
 
                     //Escribir si va a usar MASC
-                    bw.write(dm.isUsaMASC() ? "True" : "False");
+                    bw.write(dm.isUsaMASC() ? "True\n" : "False\n");
 
                     //Número de pasos
                     int npasos2 = dm.getNumero_de_pasos();
@@ -209,7 +209,7 @@ public class Escritor {
                     bw.write(disparo.slot_arma + "\n");
                     
                     //Doble cadencia?
-                    String s_cadencia = disparo.dobleCadencia?"True":"False";
+                    String s_cadencia = disparo.dobleCadencia?"True\n":"False\n";
                     bw.write(s_cadencia + "\n");
                     
                     //Localización de la munición

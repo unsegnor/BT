@@ -155,4 +155,9 @@ public class Posicion {
         
         return respuesta;
     }
+    
+    @Override
+    public String toString(){
+        return this.hexagono.toString() + "->" + this.lado;
+    }
 }

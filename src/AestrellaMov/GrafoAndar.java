@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package AestrellaAndar;
+package AestrellaMov;
 
 import Aestrella.I_Coste;
 import Aestrella.I_Grafo;
@@ -36,12 +36,12 @@ class GrafoAndar implements I_Grafo {
     /*
      * Hemos sobreescrito la función HashCode y Equals de Posición para poder utilizarla fácilmente como índice en Hash
      */
-    HashMap<Posicion, NodoAndar> nodos;
+    HashMap<Posicion, NodoMov> nodos;
 
     GrafoAndar(EstadoDeJuego estado) {
         this.estado = estado;
         this.mapa = estado.mapa;
-        nodos = new HashMap<Posicion, NodoAndar>();
+        nodos = new HashMap<Posicion, NodoMov>();
     }
 
     /**
@@ -51,10 +51,10 @@ class GrafoAndar implements I_Grafo {
      * @param p
      * @return
      */
-    public NodoAndar getNodo(Posicion p) {
-        NodoAndar respuesta = nodos.get(p);
+    public NodoMov getNodo(Posicion p) {
+        NodoMov respuesta = nodos.get(p);
         if (respuesta == null) {
-            respuesta = new NodoAndar(p);
+            respuesta = new NodoMov(p);
             nodos.put(p, respuesta);
         }
         return respuesta;
@@ -63,11 +63,11 @@ class GrafoAndar implements I_Grafo {
     @Override
     public I_Coste calcularCosteHeuristico(I_Nodo vecino, I_Nodo destino) {
         //El coste heurístico es la distancia entre los dos hexágonos independientemente de su encaramiento
-        CosteAndar coste = new CosteAndar();
+        CosteMov coste = new CosteMov();
 
         //Casteamos los nodos
-        NodoAndar a = (NodoAndar) vecino;
-        NodoAndar b = (NodoAndar) destino;
+        NodoMov a = (NodoMov) vecino;
+        NodoMov b = (NodoMov) destino;
 
         int distancia = mapa.distanciaCasillas(a.getPosicion().getHexagono(), b.getPosicion().getHexagono());
 
@@ -86,55 +86,64 @@ class GrafoAndar implements I_Grafo {
         ArrayList<I_Nodo> respuesta = new ArrayList<I_Nodo>();
 
         //Extraemos la posición del nodo
-        Posicion p = ((NodoAndar) nodo).getPosicion();
+        Posicion p = ((NodoMov) nodo).getPosicion();
 
         //Coste real del nodo que nos envían
-        CosteAndar coste = (CosteAndar) ((NodoAndar) nodo).getCosteReal();
+        CosteMov coste = (CosteMov) ((NodoMov) nodo).getCosteReal();
 
         //Si andamos podemos girar izquierda, girar derecha, avanzar o retroceder
-        NodoAndar giroIzquierda = new NodoAndar(p.giroIzquierda());
+        NodoMov giroIzquierda = new NodoMov(p.giroIzquierda());
         giroIzquierda.setPaso(new Paso(tiposDePaso.Izquierda, 1));
-        giroIzquierda.setCosteReal(coste.sumar(new CosteAndar(Reglas.costeGiro)));
+        giroIzquierda.setCosteReal(coste.sumar(new CosteMov(Reglas.costeGiro)));
         respuesta.add(giroIzquierda);
 
-        NodoAndar giroDerecha = new NodoAndar(p.giroDerecha());
+        NodoMov giroDerecha = new NodoMov(p.giroDerecha());
         giroDerecha.setPaso(new Paso(tiposDePaso.Derecha, 1));
-        giroDerecha.setCosteReal(coste.sumar(new CosteAndar(Reglas.costeGiro)));
+        giroDerecha.setCosteReal(coste.sumar(new CosteMov(Reglas.costeGiro)));
         respuesta.add(giroDerecha);
 
         //Alante y atrás sólo las añadimos si las casillas existen
         Posicion delante = p.delante();
         if (mapa.valido(delante.getHexagono())) {
             //Obtenemos el nodo
-            NodoAndar avanzar = new NodoAndar(delante);
+            NodoMov avanzar = new NodoMov(delante);
             //Calculamos el coste
-            CosteAndar costeAccion = calcularCosteAvanzar(p.getHexagono(), delante.getHexagono(), estado);
-            //Lo sumamos
-            avanzar.setCosteReal(coste.sumar(costeAccion));
-            //Anotamos el tipo de paso que llevamos a cabo
-            avanzar.setPaso(new Paso(tiposDePaso.Adelante, 1));
-            //Lo anotamos
-            respuesta.add(avanzar);
+            CosteMov costeAccion = calcularCosteAvanzar(p.getHexagono(), delante.getHexagono(), estado);
+
+            //Lo tenemos en cuenta si el coste no es imposible (ahorramos cálculo y nodos inútiles)
+            if (!costeAccion.imposible) {
+                //Lo sumamos
+                avanzar.setCosteReal(coste.sumar(costeAccion));
+                //Anotamos el tipo de paso que llevamos a cabo
+                avanzar.setPaso(new Paso(tiposDePaso.Adelante, 1));
+                //Lo anotamos
+                respuesta.add(avanzar);
+            }
         }
         Posicion detras = p.atras();
         if (mapa.valido(detras.getHexagono())) {
             //Obtenemos el nodo
-            NodoAndar retroceder = new NodoAndar(detras);
+            NodoMov retroceder = new NodoMov(detras);
             //Calculamos el coste
-            CosteAndar costeAccion = calcularCosteRetroceder(p.getHexagono(), detras.getHexagono(), estado);
-            //Lo sumamos
-            retroceder.setCosteReal(coste.sumar(costeAccion));
-            //Anotamos el tipo de paso que llevamos a cabo
-            retroceder.setPaso(new Paso(tiposDePaso.Atras, 1));
-            //Lo anotamos            
-            respuesta.add(retroceder);
+            CosteMov costeAccion = calcularCosteRetroceder(p.getHexagono(), detras.getHexagono(), estado);
+
+            //Si el coste es imposible no la añadimos
+            if (!costeAccion.imposible) {
+
+                //Lo sumamos
+                retroceder.setCosteReal(coste.sumar(costeAccion));
+                //Anotamos el tipo de paso que llevamos a cabo
+                retroceder.setPaso(new Paso(tiposDePaso.Atras, 1));
+                //Lo anotamos            
+                respuesta.add(retroceder);
+            }
         }
 
         return respuesta;
     }
 
-    private CosteAndar calcularCosteAvanzar(Phexagono a, Phexagono b, EstadoDeJuego estado) {
-        CosteAndar respuesta = new CosteAndar();
+    private CosteMov calcularCosteAvanzar(Phexagono a, Phexagono b, EstadoDeJuego estado) {
+        CosteMov respuesta = new CosteMov();
 
         //Obtenemos las casillas 
         //Coste total
@@ -217,7 +226,7 @@ class GrafoAndar implements I_Grafo {
                 if (chequeos > 0) {
                     respuesta.chequeos_de_pilotaje = 1;
                 }
-            }else{
+            } else {
                 respuesta.imposible = true;
             }
         } else {
@@ -227,8 +236,8 @@ class GrafoAndar implements I_Grafo {
         return respuesta;
     }
 
-    private CosteAndar calcularCosteRetroceder(Phexagono a, Phexagono b, EstadoDeJuego estado) {
-        CosteAndar respuesta = new CosteAndar();
+    private CosteMov calcularCosteRetroceder(Phexagono a, Phexagono b, EstadoDeJuego estado) {
+        CosteMov respuesta = new CosteMov();
         respuesta.imposible = false;
         //Hacia atrás no se puede cambiar de elevación
         //Obtenemos las casillas 
@@ -312,7 +321,7 @@ class GrafoAndar implements I_Grafo {
                 if (chequeos > 0) {
                     respuesta.chequeos_de_pilotaje = 1;
                 }
-            }else{
+            } else {
                 respuesta.imposible = true;
             }
         } else {
@@ -326,11 +335,11 @@ class GrafoAndar implements I_Grafo {
 
     @Override
     public I_Coste calcularCosteReal(I_Nodo actual, I_Nodo vecino) {
-        CosteAndar respuesta = null;
+        CosteMov respuesta = null;
 
         //Comprobar la acción que ha realizado el nodo y actuar en consecuencia
-        NodoAndar a = (NodoAndar) actual;
-        NodoAndar b = (NodoAndar) vecino;
+        NodoMov a = (NodoMov) actual;
+        NodoMov b = (NodoMov) vecino;
 
         switch (a.getPaso().getTipoDePaso()) {
             case Adelante:
@@ -342,11 +351,11 @@ class GrafoAndar implements I_Grafo {
                 break;
 
             case Derecha:
-                respuesta = new CosteAndar(Reglas.costeGiro);
+                respuesta = new CosteMov(Reglas.costeGiro);
                 break;
 
             case Izquierda:
-                respuesta = new CosteAndar(Reglas.costeGiro);
+                respuesta = new CosteMov(Reglas.costeGiro);
                 break;
         }
 
