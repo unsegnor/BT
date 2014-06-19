@@ -165,7 +165,7 @@ class GrafoCorrer implements I_Grafo {
                             case 0:
                                 costeEntrada += 1;
                                 break;
-                                //Cuando corre no puede entrar en hexágonos de más de 1 de profundidad
+                                //Cuando corre no puede entrar en hexágonos de más de 0 de profundidad
                             case 1:
                                 respuesta.imposible = true;
                                 break;

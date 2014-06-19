@@ -16,7 +16,7 @@ class ComparaPosicionesConArmas implements Comparator<PosEval> {
     public int compare(PosEval o1, PosEval o2) {
 
         int respuesta = 0;
-        //Comapramos con armas así que tenemos en cuenta la LDV, los niveles, etc
+        //Comparamos con armas así que tenemos en cuenta la LDV, los niveles, etc
         //Si o1 es mejor que o2 se responde -1
 
         //En caso de que una tenga LDV y la otra no, ¿cuál es mejor?
@@ -48,8 +48,9 @@ class ComparaPosicionesConArmas implements Comparator<PosEval> {
                 respuesta = 1;
             }
         }
-        
 
+        //TODO Si empatan porque ninguna es la leche entonces coger la que no tena LDV
+        
         //Si empatan escogemos la posición más elevada
         if(respuesta == 0){
             return o2.niveles_por_ecima_del_enemigo - o1.niveles_por_ecima_del_enemigo;
@@ -60,6 +61,10 @@ class ComparaPosicionesConArmas implements Comparator<PosEval> {
             return o1.giros_para_ecarar_enemigo - o2.giros_para_ecarar_enemigo;
         }
 
+        //Si empatan cogemos la posición más cercana al enemigo
+        if(respuesta == 0){
+            return o1.distancia_al_enemigo - o2.distancia_al_enemigo;
+        }
 
 
         return respuesta;

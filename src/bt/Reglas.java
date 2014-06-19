@@ -14,10 +14,16 @@ public class Reglas {
     public static int costeGiro = 1;
     
     
+    //Tipo de recorrido
+    public enum TipoRecorrido {Indefinido, Corto, Largo};
+    
     //Tipos de movimiento
     public enum tiposDeMovimiento {Indefinido, Inmovil, Andar, Correr, Saltar};
     //Tipos de reacción
     public enum TiposDeReaccion {Igual, Derecha, Izquierda};
+    //Tipos de localización de componente
+    //(0=BI,1=TI,2=PI,3=PD,4=TD,5=BD,6=TC,7=CAB,8=TIa,9=TDa,10=TCa)
+    public enum LocalizacionArma {BI, TI, PI, PD, TD, BD, TC, CAB, TIa, TDa, TCa};
     //Tipos de localización
     public enum Localizacion {BI, BD, PI, PD, TC, TI, TD, CAB, BIBD};
     //Tipos de Objetivo

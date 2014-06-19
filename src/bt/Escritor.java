@@ -209,7 +209,7 @@ public class Escritor {
                     bw.write(disparo.slot_arma + "\n");
                     
                     //Doble cadencia?
-                    String s_cadencia = disparo.dobleCadencia?"True\n":"False\n";
+                    String s_cadencia = disparo.dobleCadencia?"True":"False";
                     bw.write(s_cadencia + "\n");
                     
                     //Localización de la munición
@@ -219,9 +219,9 @@ public class Escritor {
                         //Slot de munición
                         bw.write(disparo.slot_municion + "\n");
                     }else{
-                        bw.write(-1);
+                        bw.write("-1");
                         bw.write("\n");
-                        bw.write(-1);
+                        bw.write("-1");
                         bw.write("\n");
                     }
                     

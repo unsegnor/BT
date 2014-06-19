@@ -16,6 +16,7 @@ import static bt.Reglas.tiposDeMovimiento.Correr;
 import static bt.Reglas.tiposDeMovimiento.Inmovil;
 import static bt.Reglas.tiposDeMovimiento.Saltar;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -97,17 +98,18 @@ public class SunTzu {
         Movimiento respuesta = null;
 
 
+
+        respuesta = movimientoCortoLargo(estado, condiciones);
+
+
         //Si no tenemos armas de fuego
-        if (!condiciones.armas) {
-            respuesta = movimientoSinArmas(estado, condiciones);
-
-        } else {
-
-            respuesta = movimientoConArmas(estado, condiciones);
-
-
-        }
-
+        /*
+         if (!condiciones.armas) {
+         respuesta = movimientoSinArmas(estado, condiciones);
+         } else {
+         respuesta = movimientoConArmas(estado, condiciones);
+         }
+         */
 
 
 
@@ -680,11 +682,96 @@ public class SunTzu {
     }
 
     private static Accion responderAAtaqueArmas(EstadoDeJuego estado, Condiciones condiciones) {
-        return new DispararConTodoAlMasCercano(estado);
+        Accion respuesta = null;
+
+        //Detectar al enemigo más cercano con LDV
+        DataMech actual = estado.getMechActual();
+        DataMech enemigo;
+
+        Par<DataMech, ResultadoLDV> r = SunTzu.getEnemigoMasCercanoConLDV(estado);
+        enemigo = r.primero;
+        ResultadoLDV rLDV = r.segundo;
+
+        //Si tenemos enemigo seguimos
+        //Si tenemos un enemigo cercano con LDV entonces le disparamos con todo
+        if (enemigo != null) {
+            respuesta = new DispararConTodoAMech(enemigo, rLDV, estado);
+        } else {
+            respuesta = new NoDisparar();
+        }
+
+        return respuesta;
+    }
+
+    public static Reglas.tiposAnguloDisparo obtenerAnguloDeDisparo(EstadoDeJuego estado, Posicion origen, Posicion destino) {
+        Reglas.tiposAnguloDisparo respuesta = Reglas.tiposAnguloDisparo.Desconocido;
+        //Obtenemos la cara que encara directamente al enemigo
+        int cara_enemigo = estado.mapa.encararA(origen.getHexagono(), destino.getHexagono());
+        int cara_origen = origen.getLado();
+
+        //Calculamos la diferencia de nuestro encaramiento al suyo
+        int dif = Posicion.distanciaEntreCaras(origen.getLado(), cara_enemigo);
+
+        //Según la diferencia estaremos en un ángulo u otro
+
+        //Si la diferencia es menor que 2 el enemigo está en el ángulo  frontal
+        if (dif < 2) {
+            respuesta = Reglas.tiposAnguloDisparo.Frontal;
+        } else if (dif == 3) {
+            //Si está en el lado opuesto 
+            respuesta = Reglas.tiposAnguloDisparo.Posterior;
+        } else {
+            //Sino la diferencia es 2 pero tenemos que averiguar por qué lado
+
+            //Debemos averiguar si la diferencia es hacia abajo o hacia arriba
+
+            //Obtenemos la cara que está dos posiciones a la derecha
+            int cara_derecha = origen.giroDerecha().giroDerecha().getLado();
+
+            //Si es igual que la del enemigo está a la derecha, sino a la izquierda, no queda otra
+            if (cara_derecha == cara_enemigo) {
+                respuesta = Reglas.tiposAnguloDisparo.Derecho;
+            } else {
+                respuesta = Reglas.tiposAnguloDisparo.Izquierdao;
+            }
+        }
+
+
+        return respuesta;
+    }
+
+    public static Reglas.Localizacion traducirLocalizacion(int localizacion) {
+        //(0=BI,1=TI,2=PI,3=PD,4=TD,5=BD,6=TC,7=CAB,8=TIa,9=TDa,10=TCa)
+        switch (localizacion) {
+            case 0:
+                return Reglas.Localizacion.BI;
+            case 1:
+                return Reglas.Localizacion.TI;
+            case 2:
+                return Reglas.Localizacion.PI;
+            case 3:
+                return Reglas.Localizacion.PD;
+            case 4:
+                return Reglas.Localizacion.TD;
+            case 5:
+                return Reglas.Localizacion.BD;
+            case 6:
+                return Reglas.Localizacion.TC;
+            case 7:
+                return Reglas.Localizacion.CAB;
+
+            default:
+                return Reglas.Localizacion.BIBD;
+        }
     }
 
     private static Accion responderAAtaqueFisico(EstadoDeJuego estado, Condiciones condiciones) {
-        return new NoAtacar();
+        Accion respuesta = new NoAtacar();
+        //TODO Deberían pegarse también si no les queda munición
+        if(!condiciones.armas){
+            respuesta = new Punietazos(estado, condiciones);
+        }
+        return respuesta;
     }
 
     private static Accion responderAFinalTurno(EstadoDeJuego estado, Condiciones condiciones) {
@@ -1432,5 +1519,397 @@ public class SunTzu {
         }
 
         return respuesta;
+    }
+
+    static boolean[] getLocalizacionesValidasParaDisparar(EstadoDeJuego estado, Reglas.tiposAnguloDisparo anguloDisparoParteSuperior, Reglas.tiposAnguloDisparo anguloDisparoPiernas, boolean disparan_piernas) {
+        boolean[] respuesta = new boolean[8];
+
+        //Los ponemos todos a false
+        Arrays.fill(respuesta, false);
+
+
+        //(0=BI,1=TI,2=PI,3=PD,4=TD,5=BD,6=TC,7=CAB,8=TIa,9=TDa,10=TCa)
+
+        switch (anguloDisparoParteSuperior) {
+            case Frontal:
+                //Son válidas las zonas del torso y la cabeza
+                respuesta[6] = true;
+                respuesta[1] = true;
+                respuesta[4] = true;
+                respuesta[7] = true;
+
+                //También los brazos y las piernas
+                respuesta[0] = true;
+                respuesta[2] = true;
+                respuesta[3] = true;
+                respuesta[5] = true;
+                break;
+
+            case Izquierdao:
+                //Sólo pueden disparar las armas del brazo izquierdo
+                respuesta[0] = true;
+                break;
+            case Derecho:
+                //Sólo puede disparar las armas del brazo derecho
+                respuesta[5] = true;
+                break;
+
+            case Posterior:
+                //Son válidas las armas montadas en la parte trasera del torso
+                respuesta[1] = true;
+                respuesta[4] = true;
+                respuesta[6] = true;
+
+                //Las piernas y la cabeza también son válidas hacia atrás
+                respuesta[2] = true;
+                respuesta[3] = true;
+                respuesta[7] = true;
+        }
+
+        //Si las piernas no pueden disparar las desactivamos
+        if (!disparan_piernas) {
+            respuesta[2] = false;
+            respuesta[3] = false;
+        }
+
+        return respuesta;
+    }
+
+    private static Movimiento movimientoCortoLargo(EstadoDeJuego estado, Condiciones condiciones) {
+        Movimiento respuesta = null;
+
+
+        //TODO Si somos los últimos o primeros en mover debe influir en nuestra decisión
+
+
+
+        //Comprobar posiciones de los mechs enemigos operativos
+        //y la nuestra
+
+        ArrayList<DataMech> enemigos_operativos = new ArrayList<DataMech>();
+        DataMech mech_actual = null;
+
+        DataMech[] mechs = estado.datos_mechs.getMechs();
+
+        for (DataMech mech : mechs) {
+            if (mech.getnJugador() == estado.jugador) {
+                mech_actual = mech;
+            } else {
+                if (mech.isOperativo()) {
+                    enemigos_operativos.add(mech);
+                }
+            }
+        }
+
+        DataMech enemigo_cercano = SunTzu.getEnemigoMasCercanoConLDV(estado).primero;
+
+        if (enemigo_cercano == null) {
+            enemigo_cercano = SunTzu.getEnemigoMasCercano(estado);
+        }
+        Posicion p_enemigo = new Posicion(enemigo_cercano.getColumna(), enemigo_cercano.getFila(), enemigo_cercano.getEncaramientoMech());
+
+        ArrayList<PosicionAccion> posiciones_alcanzables;
+
+        posiciones_alcanzables = obtenerPosicionesAlcanzables(mech_actual, estado);
+
+        //Todas las calculadas aquí son de corto recorrido
+        for (PosicionAccion pos : posiciones_alcanzables) {
+            pos.setRecorrido(Reglas.TipoRecorrido.Corto);
+        }
+
+        //Añadimos ahora las de largo recorrido
+
+        //Obtenemos las casillas cercanas al enemigo con un radio de 6, por ejemplo
+        ArrayList<Phexagono> cercanas_al_enemigo = estado.mapa.cercanas(p_enemigo.getHexagono(), 6);
+
+        //Para cada una de ellas añadimos una posicionAcción por cada posición que tiene y por cada forma de llegar hasta ella
+        for (Phexagono hex : cercanas_al_enemigo) {
+
+            //Para cada cara
+            for (int cara = 1; cara <= 6; cara++) {
+                Posicion p = new Posicion(hex, cara);
+                PosicionAccion pa = new PosicionAccion(p, Andar);
+                pa.setRecorrido(Reglas.TipoRecorrido.Largo);
+                PosicionAccion pc = new PosicionAccion(p, Correr);
+                pc.setRecorrido(Reglas.TipoRecorrido.Largo);
+
+                //Y lo añadimos a la lista
+                posiciones_alcanzables.add(pa);
+                posiciones_alcanzables.add(pc);
+
+            }
+
+
+
+        }
+
+        Posicion p_actual = new Posicion(mech_actual.getColumna(), mech_actual.getFila(), mech_actual.getEncaramientoMech());
+
+
+        //Evaluar todas las posiciones y quedarnos con la mejor, incluida la actual
+        PosEval mejor = evaluarPosicion(p_actual, estado, condiciones);
+        PosicionAccion mejorPA = new PosicionAccion(p_actual, tiposDeMovimiento.Inmovil);
+        for (PosicionAccion pa : posiciones_alcanzables) {
+            boolean valida = true;
+            //Descartamos las posiciones en las que hay un enemigo
+            for (DataMech enemigo : enemigos_operativos) {
+                if (pa.posicion.getHexagono().getColumna() == enemigo.getColumna()
+                        && pa.posicion.getHexagono().getFila() == enemigo.getFila()) {
+                    valida = false;
+                }
+
+
+            }
+            if (valida) {
+                //Evaluar la posición
+                PosEval datos_de_posicion = evaluarPosicion(pa.posicion, estado, condiciones);
+                //Añadir el calor generado para alcanzar la posición
+                switch (pa.tipoMovimiento) {
+                    case Inmovil:
+                        datos_de_posicion.calor_generado = 0;
+                        break;
+                    case Andar:
+                        datos_de_posicion.calor_generado = 1;
+                        break;
+                    case Correr:
+                        datos_de_posicion.calor_generado = 2;
+                        break;
+                    case Saltar:
+                        //El calor generado al saltar depende de la distancia recorrida
+                        int distancia = estado.mapa.distanciaCasillas(p_actual.getHexagono(), pa.posicion.getHexagono());
+                        if (distancia <= 3) {
+                            datos_de_posicion.calor_generado = 3;
+                        } else {
+                            datos_de_posicion.calor_generado = distancia;
+                        }
+                        break;
+
+                }
+
+                if (mejor == null) {
+                    boolean existeRuta = true;
+                    //Si la posición es de largo recorrido tenemos que comprobar que sea alcanzable
+                    if (pa.getRecorrido() == Reglas.TipoRecorrido.Largo) {
+                        Aestrella.Resultado result;
+                        switch (pa.tipoMovimiento) {
+                            case Andar:
+                                result = AestrellaMov.AstrellaMov.calcularRutaAndando(p_actual, pa.posicion, estado);
+                                if (result == null || ((CosteMov) result.getCoste()).imposible) {
+                                    existeRuta = false;
+                                }
+                                break;
+                            case Correr:
+                                result = AestrellaMov.AstrellaMov.calcularRutaCorriendo(p_actual, pa.posicion, estado);
+                                if (result == null || ((CosteMov) result.getCoste()).imposible) {
+                                    existeRuta = false;
+                                }
+                                break;
+                        }
+                    }
+                    if (existeRuta) {
+                        mejor = datos_de_posicion;
+                    }
+                } else {
+                    //Comprobamos si es mejor que la mejor actual
+                    if (condiciones.comparador_de_posiciones.compare(datos_de_posicion, mejor) < 0) {
+                        boolean existeRuta = true;
+                        //Si la posición es de largo recorrido tenemos que comprobar que sea alcanzable
+                        if (pa.getRecorrido() == Reglas.TipoRecorrido.Largo) {
+                            Aestrella.Resultado result;
+                            switch (pa.tipoMovimiento) {
+                                case Andar:
+                                    result = AestrellaMov.AstrellaMov.calcularRutaAndando(p_actual, pa.posicion, estado);
+                                    if (result == null || ((CosteMov) result.getCoste()).imposible) {
+                                        existeRuta = false;
+                                    }
+                                    break;
+                                case Correr:
+                                    result = AestrellaMov.AstrellaMov.calcularRutaCorriendo(p_actual, pa.posicion, estado);
+                                    if (result == null || ((CosteMov) result.getCoste()).imposible) {
+                                        existeRuta = false;
+                                    }
+                                    break;
+                            }
+                        }
+                        //Si existe la ruta entonces la sustituimos
+                        if (existeRuta) {
+                            //Si es mejor la sustituimos
+                            mejor = datos_de_posicion;
+                            mejorPA = pa;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        //Ya tenemos la mejor casilla a la que podemos llegar
+
+
+
+        //Comprobamos qué tipo de acción es la que vamos a utilizar y obtenemos la ruta necesaria
+        respuesta = new Movimiento();
+        //Determinamos el tipo de movimiento
+        respuesta.setTipo(mejorPA.tipoMovimiento);
+
+        //Determinamos el objetivo
+        respuesta.setDestino(mejorPA.posicion.getHexagono());
+
+        //Determinamos el lado
+        respuesta.setLado_destino(mejorPA.posicion.getLado());
+
+        System.out.println("Objetivo: " + mejorPA.posicion);
+
+        //Calculamos los puntos máximos de movimiento y en caso necesario cortamos las rutas
+        int pandar = mech_actual.getInformacion_adicional().getPuntos_andar();
+        int pcorrer = mech_actual.getInformacion_adicional().getPuntos_correr();
+        int psaltar = mech_actual.getInformacion_adicional().getPuntos_saltar();
+
+        boolean posible = true;
+
+        switch (mejorPA.tipoMovimiento) {
+            case Andar:
+                //Inicializamos la ruta
+                respuesta.setRuta(new Ruta());
+
+                //Calculamos la ruta hasta el objetivo 
+                //TODO evitar este cálculo utilizando los conjuntos de antes para saber hasta dónde podemos llegar
+                Aestrella.Resultado r = AestrellaMov.AstrellaMov.calcularRutaAndando(p_actual, mejorPA.posicion, estado);
+
+
+                //Imprimimos la ruta por pantalla
+                for (int i = 1; i < r.getRuta().size(); i++) {
+                    NodoMov nodo = (NodoMov) r.getRuta().get(i);
+
+                    System.out.println(nodo.getPosicion());
+
+                }
+
+                ArrayList<I_Nodo> nodos_ruta = r.getRuta();
+
+                int lnr = nodos_ruta.size();
+
+                //Componer la ruta ( comenzamos en el 1 porque la primera casilla es el orígen y no forma parte de la ruta )
+                for (int i = 1; i < lnr && posible; i++) {
+                    NodoMov nodo = (NodoMov) nodos_ruta.get(i);
+                    if (i> 1 && mejorPA.getRecorrido() == Reglas.TipoRecorrido.Largo && ((CosteMov) nodo.getCosteReal()).getPuntos_de_movimiento() > pandar) {
+                        posible = false;
+                    } else {
+                        respuesta.getRuta().getPasos().add(nodo.getPaso());
+                        respuesta.setDestino(nodo.getPosicion().getHexagono());
+                        respuesta.setLado_destino(nodo.getPosicion().getLado());
+                    }
+
+                }
+                break;
+
+            case Correr:
+                //Inicializamos la ruta
+                respuesta.setRuta(new Ruta());
+
+                //Calculamos la ruta hasta el objetivo 
+                //TODO evitar este cálculo utilizando los conjuntos de antes para saber hasta dónde podemos llegar
+                Aestrella.Resultado rutaCorriendo = AestrellaMov.AstrellaMov.calcularRutaCorriendo(p_actual, mejorPA.posicion, estado);
+
+
+                //Imprimimos la ruta por pantalla
+                for (int i = 0; i < rutaCorriendo.getRuta().size(); i++) {
+                    NodoMov nodo = (NodoMov) rutaCorriendo.getRuta().get(i);
+
+                    System.out.println(nodo.getPosicion());
+
+                }
+
+                ArrayList<I_Nodo> nodos_ruta_corriendo = rutaCorriendo.getRuta();
+
+                int lnrc = nodos_ruta_corriendo.size();
+
+                //Componer la ruta ( comenzamos en el 1 porque la primera casilla es el orígen y no forma parte de la ruta )
+                for (int i = 1; i < lnrc && posible; i++) {
+                    NodoMov nodo = (NodoMov) nodos_ruta_corriendo.get(i);
+                    if (mejorPA.getRecorrido() == Reglas.TipoRecorrido.Largo && ((CosteMov) nodo.getCosteReal()).getPuntos_de_movimiento() > pcorrer) {
+                        posible = false;
+                    } else {
+                        respuesta.getRuta().getPasos().add(nodo.getPaso());
+                        respuesta.setDestino(nodo.getPosicion().getHexagono());
+                        respuesta.setLado_destino(nodo.getPosicion().getLado());
+                    }
+
+                }
+
+                break;
+
+            case Saltar:
+                //Saltamos a la posición determinada
+                //Generamos el salto
+                Salto salto = new Salto();
+                salto.setTipo(Reglas.tiposDeMovimiento.Saltar);
+                salto.setDestino(mejorPA.posicion.getHexagono());
+                salto.setUsaMASC(false);
+                salto.setRuta(null);
+                salto.setLado_destino(mejorPA.posicion.getLado());
+
+                respuesta = salto;
+
+                break;
+            case Inmovil:
+                respuesta = new NoMoverse();
+                break;
+        }
+
+
+        return respuesta;
+    }
+
+    public static DataMech getEnemigoMasCercano(EstadoDeJuego estado) {
+        DataMech respuesta = null;
+
+        //Obtener el mech actual
+        DataMech mech_actual = estado.getMechActual();
+
+        //Obtener la posición actual
+        Posicion posicion_mech = new Posicion(mech_actual.getColumna(), mech_actual.getFila(), mech_actual.getEncaramientoMech());
+
+        //Obtener a todos los enemigos y sus posiciones
+
+        DataMech[] mechs = estado.datos_mechs.getMechs();
+
+        Posicion p_enemigo = null;
+        int menor_distancia = 0;
+
+        for (DataMech mech : mechs) {
+            if (mech.getnJugador() == estado.jugador) {
+                mech_actual = mech;
+            } else {
+                if (mech.isOperativo()) {
+                    //Obtener su posición
+                    Posicion p = new Posicion(mech.getColumna(), mech.getFila(), mech.getEncaramientoMech());
+
+                    //Calculamos la distancia hasta el mech
+                    int distancia = estado.mapa.distanciaCasillas(posicion_mech.getHexagono(), p.getHexagono());
+
+                    //Si no tenemos posición cercana la definimos
+                    if (p_enemigo == null) {
+                        p_enemigo = p;
+                        respuesta = mech;
+                        menor_distancia = distancia;
+                    } else {
+                        //Sino sólo lo sustiuimos si está más cerca que los demás
+                        if (distancia < menor_distancia) {
+                            p_enemigo = p;
+                            respuesta = mech;
+                            menor_distancia = distancia;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return respuesta;
+    }
+
+    static boolean[] getLocalizacionesValidasParaGolpear(EstadoDeJuego estado, Reglas.tiposAnguloDisparo anguloGolpeoSuperior, Reglas.tiposAnguloDisparo anguloGolpeoPiernas, boolean golpean_piernas) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

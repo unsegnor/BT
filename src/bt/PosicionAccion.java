@@ -4,6 +4,7 @@
  */
 package bt;
 
+import bt.Reglas.TipoRecorrido;
 import bt.Reglas.tiposDeMovimiento;
 
 /**
@@ -14,11 +15,25 @@ class PosicionAccion {
     
     Posicion posicion;
     tiposDeMovimiento tipoMovimiento = tiposDeMovimiento.Indefinido;
- 
+    private TipoRecorrido recorrido;
     
     PosicionAccion (Posicion posicion, tiposDeMovimiento tipo_de_movimiento){
         this.posicion = posicion;
         this.tipoMovimiento = tipo_de_movimiento;
+    }
+
+    /**
+     * @return the recorrido
+     */
+    public TipoRecorrido getRecorrido() {
+        return recorrido;
+    }
+
+    /**
+     * @param recorrido the recorrido to set
+     */
+    public void setRecorrido(TipoRecorrido recorrido) {
+        this.recorrido = recorrido;
     }
     
 }

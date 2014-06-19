@@ -32,6 +32,7 @@ public class AstrellaMov {
 
     public static NodosEnRango obtenerEnRangoAndando(EstadoDeJuego estado, Posicion origen, int radio) {
         CosteMov costemaximo = new CosteMov(radio);
+        costemaximo.chequeos_de_pilotaje = 1000;
 
         //Cargamos grafo de andar
         GrafoAndar grafo = new GrafoAndar(estado);
@@ -63,7 +64,8 @@ public class AstrellaMov {
 
     public static NodosEnRango obtenerEnRangoCorriendo(EstadoDeJuego estado, Posicion origen, int radio) {
         CosteMov costemaximo = new CosteMov(radio);
-
+        costemaximo.chequeos_de_pilotaje = 1000; //ponemos esto para que en la comparación con el máximo no tenga en cuenta los chequeos de pilotaje
+        
         //Cargamos grafo de andar
         GrafoCorrer grafo = new GrafoCorrer(estado);
 
