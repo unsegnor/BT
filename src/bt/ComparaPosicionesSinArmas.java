@@ -20,9 +20,11 @@ class ComparaPosicionesSinArmas implements Comparator<PosEval> {
         //Mejor cuanto más cerca
         respuesta =  o1.distancia_al_enemigo - o2.distancia_al_enemigo;
         
+        //Mejor estar un nivel por encima
+        
         //Al mismo nivel
         if (respuesta == 0){
-            respuesta = o1.niveles_por_ecima_del_enemigo - o2.niveles_por_ecima_del_enemigo;
+            respuesta = Math.abs(o1.niveles_por_ecima_del_enemigo) - Math.abs(o2.niveles_por_ecima_del_enemigo);
         }
         
         //Si están igual de cerca, mejor encarar al enemigo

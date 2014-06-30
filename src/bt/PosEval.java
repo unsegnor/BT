@@ -32,4 +32,25 @@ class PosEval implements I_Eval {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    @Override
+    public String toString(){
+        
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Calor generado: ").append(this.calor_generado).append("\n");
+        sb.append("Distancia al enemigo: ").append(this.distancia_al_enemigo).append("\n");
+        sb.append("Enemigo cubierto: ").append(this.enemigo_cubierto).append("\n");
+        sb.append("Enemigo visible: ").append(this.enemigo_visible).append("\n");
+        sb.append("Giros del enemigo para encarame: ").append(this.giros_enemigo_para_encararme).append("\n");
+        sb.append("Giros para encarar al enemigo: ").append(this.giros_para_ecarar_enemigo).append("\n");
+        sb.append("Niveles por encima del enemigo: ").append(this.niveles_por_ecima_del_enemigo).append("\n");
+        sb.append("Ofrece cobertura: ").append(this.ofrece_cobertura).append("\n");
+        sb.append("Visible por enemigo: ").append(this.visible_por_enemigo).append("\n");
+        
+        
+        
+        return sb.toString();
+        
+    }
+    
 }

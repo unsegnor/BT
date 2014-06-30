@@ -70,7 +70,7 @@ public class PathFinder {
 
         String esposible = posible ? "posible" : "imposible";
 
-        System.out.println("Salto desde " + p_inicio + " a " + p_fin + " es " + esposible + ". Distancia: " + distancia + " PM: " + pm);
+        //System.out.println("Salto desde " + p_inicio + " a " + p_fin + " es " + esposible + ". Distancia: " + distancia + " PM: " + pm);
 
         return respuesta;
     }

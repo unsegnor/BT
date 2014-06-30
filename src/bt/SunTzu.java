@@ -823,7 +823,7 @@ public class SunTzu {
             hamovido = true;
         }
 
-        if (hamovido) {
+        if (true){//hamovido) {
             respuesta = evaluarPosicionRelativa(mapa, posicion, p_enemigo);
         } else {
             //Si aún no ha movido entonces tenemos que evaluar todas las posiciones a las que puede llegar el enemigo y quedarnos con la peor para nosotros
@@ -1636,15 +1636,19 @@ public class SunTzu {
                 //Y lo añadimos a la lista
                 posiciones_alcanzables.add(pa);
                 posiciones_alcanzables.add(pc);
-
             }
-
-
-
         }
 
         Posicion p_actual = new Posicion(mech_actual.getColumna(), mech_actual.getFila(), mech_actual.getEncaramientoMech());
 
+        /*
+        System.out.println("Posiciones a evaluar:");
+        
+        //Tenemos todas las posiciones que vamos a evaluar
+        for(PosicionAccion posac : posiciones_alcanzables){
+            System.out.println(posac.posicion.toString() + " " + posac.tipoMovimiento.name());
+        }*/
+        
 
         //Evaluar todas las posiciones y quedarnos con la mejor, incluida la actual
         PosEval mejor = evaluarPosicion(p_actual, estado, condiciones);
@@ -1657,8 +1661,6 @@ public class SunTzu {
                         && pa.posicion.getHexagono().getFila() == enemigo.getFila()) {
                     valida = false;
                 }
-
-
             }
             if (valida) {
                 //Evaluar la posición
@@ -1689,6 +1691,7 @@ public class SunTzu {
                 if (mejor == null) {
                     boolean existeRuta = true;
                     //Si la posición es de largo recorrido tenemos que comprobar que sea alcanzable
+                    //TODO ¿y si es de corto recorrido no?
                     if (pa.getRecorrido() == Reglas.TipoRecorrido.Largo) {
                         Aestrella.Resultado result;
                         switch (pa.tipoMovimiento) {
@@ -1714,6 +1717,7 @@ public class SunTzu {
                     if (condiciones.comparador_de_posiciones.compare(datos_de_posicion, mejor) < 0) {
                         boolean existeRuta = true;
                         //Si la posición es de largo recorrido tenemos que comprobar que sea alcanzable
+                        //y sino también??
                         if (pa.getRecorrido() == Reglas.TipoRecorrido.Largo) {
                             Aestrella.Resultado result;
                             switch (pa.tipoMovimiento) {
@@ -1736,6 +1740,11 @@ public class SunTzu {
                             //Si es mejor la sustituimos
                             mejor = datos_de_posicion;
                             mejorPA = pa;
+                            
+                            //Nueva mejor casilla destino
+                            System.out.println("Nueva mejor posición -------- " + mejorPA.posicion.toString() + " " + mejorPA.tipoMovimiento.name());
+                            System.out.println(mejor);
+                            
                         }
                     }
                 }

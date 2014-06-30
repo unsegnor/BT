@@ -1241,7 +1241,7 @@ public class Mapa {
 
         //Nos colocamos en la casilla superior del hexágono a dibujar
         Phexagono inicial = new Phexagono(posicion.getColumna(), posicion.getFila() - radio);
-        int r2 = (radio * 2) + 1;
+        int r2 = radio == 0 ? 0 : (radio * 2) + 1;
 
         //Anotamos todas las casillas que bajan hasta 2 veces el radio
         respuesta.addAll(obtenerCasillasColumnaAbajo(inicial, r2));
