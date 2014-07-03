@@ -110,9 +110,14 @@ public class SunTzu {
     private static Accion responderAMovimiento(EstadoDeJuego estado, Condiciones condiciones) {
         Movimiento respuesta = null;
 
-
         if (estado.getMechActual().isEnelsuelo()) {
-            respuesta = new Levantarse(estado, condiciones);
+            Mech mech = estado.mechs.get(estado.jugador);
+
+            if (mech.datadefmech.getPuntosMovAndando() >= 2) {
+                respuesta = new Levantarse(estado, condiciones);
+            } else {
+                respuesta = new NoMoverse();
+            }
         } else {
             respuesta = movimientoCortoLargo(estado, condiciones);
         }
@@ -791,7 +796,7 @@ public class SunTzu {
 
         //Si no tengo potencia de fuego pruebo a dar puñetazos
         if (!estado.mechs.get(estado.jugador).potencia_de_fuego.existe) {
-            
+
             respuesta = new PunietazosYPatada(estado, condiciones);
         }
         return respuesta;
