@@ -15,4 +15,9 @@ class Condiciones {
     Comparator<PosEval> comparador_de_posiciones;
     boolean armas;
     
+    //Datos de potencia de fuego
+    public PotenciaDeFuego[] potencia_de_fuego;   
+    
+
+
 }

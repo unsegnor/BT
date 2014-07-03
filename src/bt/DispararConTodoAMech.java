@@ -183,10 +183,5 @@ class DispararConTodoAMech extends AtaqueArmas {
 
         //Aquí deberíamos tener los disparos en la lista de disparos
         //Debería funcionar
-
-
-
-
-
     }
 }

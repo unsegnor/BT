@@ -18,6 +18,7 @@ import static bt.Reglas.tiposDeMovimiento.Saltar;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 /**
  * Clase que centraliza toda la elaboración de la estrategia.
@@ -38,6 +39,8 @@ public class SunTzu {
 
         EstadoDeJuego estado = leer_estado_actual(jugador, fase);
 
+        estado.calcularHistorias();
+
 
         //Responder en función de la fase
         Accion resultado = null;
@@ -49,10 +52,24 @@ public class SunTzu {
 
         //Determinamos la forma de comparar las posiciones según si tenemos o no Armas de Fuego
 
+
+        //Cargamos heurísticas
+
+
+
+
+
         //Comprobar si tenemos o no potencia de fuego
 
         ComparaPosicionesConArmas conArmas = new ComparaPosicionesConArmas();
         ComparaPosicionesSinArmas sinArmas = new ComparaPosicionesSinArmas();
+
+        //Imprimimos el resumen del turno
+        for (Map.Entry<Integer, Mech> entrada : estado.mechs.entrySet()) {
+            System.out.println(entrada.getValue().toString());
+        }
+
+
 
 
         if (estado.datos_def_mechs[jugador].getnArmas() == 0) {
@@ -616,10 +633,10 @@ public class SunTzu {
 
 
         if (estado.getMechActual().isEnelsuelo()) {
-            
+
             //Si estamos en el suelo nada
             respuesta = new ReaccionarIgual();
-            
+
         } else {
 
             //Obtener el mech actual
@@ -771,8 +788,9 @@ public class SunTzu {
 
     private static Accion responderAAtaqueFisico(EstadoDeJuego estado, Condiciones condiciones) {
         Accion respuesta = new NoAtacar();
-        //TODO Deberían pegarse también si no les queda munición
-        if (!condiciones.armas) {
+
+        //Si no tengo potencia de fuego pruebo a dar puñetazos
+        if (!estado.mechs.get(estado.jugador).potencia_de_fuego.existe) {
             respuesta = new Punietazos(estado, condiciones);
         }
         return respuesta;
@@ -898,7 +916,7 @@ public class SunTzu {
         return respuesta;
     }
 
-    private static ArrayList<PosicionAccion> obtenerPosicionesAlcanzables(DataMech mech_actual, EstadoDeJuego estado) {
+    public static ArrayList<PosicionAccion> obtenerPosicionesAlcanzables(DataMech mech_actual, EstadoDeJuego estado) {
         ArrayList<PosicionAccion> respuesta = new ArrayList<PosicionAccion>();
 
         //Seleccionar un subconjunto de casillas alrededor del mech (según su capacidad de movimiento) o evaluarlas todas
