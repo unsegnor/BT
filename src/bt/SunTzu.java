@@ -47,10 +47,6 @@ public class SunTzu {
         //Determinamos las condiciones que se deben tener en cuenta
         Condiciones condiciones = new Condiciones();
 
-
-
-
-
         //Determinamos la forma de comparar las posiciones según si tenemos o no Armas de Fuego
 
         //Comprobar si tenemos o no potencia de fuego
@@ -98,9 +94,11 @@ public class SunTzu {
         Movimiento respuesta = null;
 
 
-
-        respuesta = movimientoCortoLargo(estado, condiciones);
-
+        if (estado.getMechActual().isEnelsuelo()) {
+            respuesta = new Levantarse(estado, condiciones);
+        } else {
+            respuesta = movimientoCortoLargo(estado, condiciones);
+        }
 
         //Si no tenemos armas de fuego
         /*
@@ -616,64 +614,70 @@ public class SunTzu {
 
         Accion respuesta = null;
 
-        //TODO Encarar hacia donde está el enemigo más cercano
 
-        //Obtener el mech actual
-        DataMech mech_actual = estado.getMechActual();
+        if (estado.getMechActual().isEnelsuelo()) {
+            
+            //Si estamos en el suelo nada
+            respuesta = new ReaccionarIgual();
+            
+        } else {
 
-        //Obtener la posición actual
-        Posicion posicion_mech = new Posicion(mech_actual.getColumna(), mech_actual.getFila(), mech_actual.getEncaramientoMech());
+            //Obtener el mech actual
+            DataMech mech_actual = estado.getMechActual();
 
-        DataMech enemigo_cercano = SunTzu.getEnemigoMasCercanoConLDV(estado).primero;
+            //Obtener la posición actual
+            Posicion posicion_mech = new Posicion(mech_actual.getColumna(), mech_actual.getFila(), mech_actual.getEncaramientoMech());
 
-
-        //Aquí tenemos el enemigo más cercano que nos puede disparar o null
-        if (enemigo_cercano != null) {
-            Posicion p_enemigo = new Posicion(enemigo_cercano.getColumna(), enemigo_cercano.getFila(), enemigo_cercano.getEncaramientoMech());
-            //Si tenemos enemigo más cercano calculamos cuál de los encaramientos posibles nos acerca más a encararlo
-
-            //Calculamos cuál sería el encaramiento completo
-            int encaramiento_completo = estado.mapa.encararA(posicion_mech.getHexagono(), p_enemigo.getHexagono());
+            DataMech enemigo_cercano = SunTzu.getEnemigoMasCercanoConLDV(estado).primero;
 
 
-            //Obtenemos los encaramientos posibles
-            int[] encaramientos = new int[3];
-            encaramientos[0] = posicion_mech.getLado();
-            encaramientos[1] = posicion_mech.giroIzquierda().getLado();
-            encaramientos[2] = posicion_mech.giroDerecha().getLado();
+            //Aquí tenemos el enemigo más cercano que nos puede disparar o null
+            if (enemigo_cercano != null) {
+                Posicion p_enemigo = new Posicion(enemigo_cercano.getColumna(), enemigo_cercano.getFila(), enemigo_cercano.getEncaramientoMech());
+                //Si tenemos enemigo más cercano calculamos cuál de los encaramientos posibles nos acerca más a encararlo
 
-            //Nos quedamos con el mejor encaramiento
-            int mejor_encaramiento = 0;
-            int menor_diferencia_hasta_encaramiento_completo = 6;
+                //Calculamos cuál sería el encaramiento completo
+                int encaramiento_completo = estado.mapa.encararA(posicion_mech.getHexagono(), p_enemigo.getHexagono());
 
-            for (int i = 0; i < encaramientos.length; i++) {
-                //Para cada encaramiento medimos la diferencia hasta el encaramiento completo
 
-                int dif = Posicion.distanciaEntreCaras(encaramientos[i], encaramiento_completo);
+                //Obtenemos los encaramientos posibles
+                int[] encaramientos = new int[3];
+                encaramientos[0] = posicion_mech.getLado();
+                encaramientos[1] = posicion_mech.giroIzquierda().getLado();
+                encaramientos[2] = posicion_mech.giroDerecha().getLado();
 
-                //Si la diferencia es menor que la menor entonces lo tomamos como el encaramiento correcto
-                if (dif < menor_diferencia_hasta_encaramiento_completo) {
-                    mejor_encaramiento = i;
-                    menor_diferencia_hasta_encaramiento_completo = dif;
+                //Nos quedamos con el mejor encaramiento
+                int mejor_encaramiento = 0;
+                int menor_diferencia_hasta_encaramiento_completo = 6;
+
+                for (int i = 0; i < encaramientos.length; i++) {
+                    //Para cada encaramiento medimos la diferencia hasta el encaramiento completo
+
+                    int dif = Posicion.distanciaEntreCaras(encaramientos[i], encaramiento_completo);
+
+                    //Si la diferencia es menor que la menor entonces lo tomamos como el encaramiento correcto
+                    if (dif < menor_diferencia_hasta_encaramiento_completo) {
+                        mejor_encaramiento = i;
+                        menor_diferencia_hasta_encaramiento_completo = dif;
+                    }
+
                 }
 
-            }
+                //Según qué encaramiento sea el mejor lo aplicamos
+                if (mejor_encaramiento == 1) {
+                    respuesta = new ReaccionarIzquierda();
+                } else if (mejor_encaramiento == 2) {
+                    respuesta = new ReaccionarDerecha();
+                } else {
+                    respuesta = new ReaccionarIgual();
+                }
 
-            //Según qué encaramiento sea el mejor lo aplicamos
-            if (mejor_encaramiento == 1) {
-                respuesta = new ReaccionarIzquierda();
-            } else if (mejor_encaramiento == 2) {
-                respuesta = new ReaccionarDerecha();
+
             } else {
                 respuesta = new ReaccionarIgual();
             }
 
-
-        } else {
-            respuesta = new ReaccionarIgual();
         }
-
-
 
         //De momento nos quedamos igual
         return respuesta;
@@ -768,7 +772,7 @@ public class SunTzu {
     private static Accion responderAAtaqueFisico(EstadoDeJuego estado, Condiciones condiciones) {
         Accion respuesta = new NoAtacar();
         //TODO Deberían pegarse también si no les queda munición
-        if(!condiciones.armas){
+        if (!condiciones.armas) {
             respuesta = new Punietazos(estado, condiciones);
         }
         return respuesta;
@@ -823,7 +827,7 @@ public class SunTzu {
             hamovido = true;
         }
 
-        if (true){//hamovido) {
+        if (true) {//hamovido) {
             respuesta = evaluarPosicionRelativa(mapa, posicion, p_enemigo);
         } else {
             //Si aún no ha movido entonces tenemos que evaluar todas las posiciones a las que puede llegar el enemigo y quedarnos con la peor para nosotros
@@ -1642,13 +1646,13 @@ public class SunTzu {
         Posicion p_actual = new Posicion(mech_actual.getColumna(), mech_actual.getFila(), mech_actual.getEncaramientoMech());
 
         /*
-        System.out.println("Posiciones a evaluar:");
+         System.out.println("Posiciones a evaluar:");
         
-        //Tenemos todas las posiciones que vamos a evaluar
-        for(PosicionAccion posac : posiciones_alcanzables){
-            System.out.println(posac.posicion.toString() + " " + posac.tipoMovimiento.name());
-        }*/
-        
+         //Tenemos todas las posiciones que vamos a evaluar
+         for(PosicionAccion posac : posiciones_alcanzables){
+         System.out.println(posac.posicion.toString() + " " + posac.tipoMovimiento.name());
+         }*/
+
 
         //Evaluar todas las posiciones y quedarnos con la mejor, incluida la actual
         PosEval mejor = evaluarPosicion(p_actual, estado, condiciones);
@@ -1740,11 +1744,11 @@ public class SunTzu {
                             //Si es mejor la sustituimos
                             mejor = datos_de_posicion;
                             mejorPA = pa;
-                            
+
                             //Nueva mejor casilla destino
                             System.out.println("Nueva mejor posición -------- " + mejorPA.posicion.toString() + " " + mejorPA.tipoMovimiento.name());
                             System.out.println(mejor);
-                            
+
                         }
                     }
                 }
@@ -1801,7 +1805,7 @@ public class SunTzu {
                 //Componer la ruta ( comenzamos en el 1 porque la primera casilla es el orígen y no forma parte de la ruta )
                 for (int i = 1; i < lnr && posible; i++) {
                     NodoMov nodo = (NodoMov) nodos_ruta.get(i);
-                    if (i> 1 && mejorPA.getRecorrido() == Reglas.TipoRecorrido.Largo && ((CosteMov) nodo.getCosteReal()).getPuntos_de_movimiento() > pandar) {
+                    if (i > 1 && mejorPA.getRecorrido() == Reglas.TipoRecorrido.Largo && ((CosteMov) nodo.getCosteReal()).getPuntos_de_movimiento() > pandar) {
                         posible = false;
                     } else {
                         respuesta.getRuta().getPasos().add(nodo.getPaso());
