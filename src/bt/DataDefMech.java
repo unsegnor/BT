@@ -42,7 +42,7 @@ public class DataDefMech {
      * Lógico	¿Con Hombro Izquierdo?
      */ private boolean conHombroIzquierdo;/*
      * Lógico	¿Con Brazo Izquierdo?
-     */ private boolean conBrazoIzquiero;/*
+     */ private boolean conBrazoIzquierdo;/*
      * Lógico	¿Con Antebrazo Izquierdo?
      */ private boolean conAntebrazoIzquierdo;/*
      * Lógico	¿Con Mano Izquierda?
@@ -142,7 +142,7 @@ public class DataDefMech {
          * Lógico	¿Con Hombro Izquierdo?
          */ this.setConHombroIzquierdo(leer.b(br));/*
          * Lógico	¿Con Brazo Izquierdo?
-         */ this.setConBrazoIzquiero(leer.b(br));/*
+         */ this.setConBrazoIzquierdo(leer.b(br));/*
          * Lógico	¿Con Antebrazo Izquierdo?
          */ this.setConAntebrazoIzquierdo(leer.b(br));/*
          * Lógico	¿Con Mano Izquierda?
@@ -421,15 +421,15 @@ public class DataDefMech {
     /**
      * @return the conBrazoIzquiero
      */
-    public boolean isConBrazoIzquiero() {
-        return conBrazoIzquiero;
+    public boolean isConBrazoIzquierdo() {
+        return conBrazoIzquierdo;
     }
 
     /**
      * @param conBrazoIzquiero the conBrazoIzquiero to set
      */
-    public void setConBrazoIzquiero(boolean conBrazoIzquiero) {
-        this.conBrazoIzquiero = conBrazoIzquiero;
+    public void setConBrazoIzquierdo(boolean conBrazoIzquierdo) {
+        this.conBrazoIzquierdo = conBrazoIzquierdo;
     }
 
     /**

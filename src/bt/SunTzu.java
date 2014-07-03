@@ -753,7 +753,7 @@ public class SunTzu {
             if (cara_derecha == cara_enemigo) {
                 respuesta = Reglas.tiposAnguloDisparo.Derecho;
             } else {
-                respuesta = Reglas.tiposAnguloDisparo.Izquierdao;
+                respuesta = Reglas.tiposAnguloDisparo.Izquierda;
             }
         }
 
@@ -791,7 +791,8 @@ public class SunTzu {
 
         //Si no tengo potencia de fuego pruebo a dar puñetazos
         if (!estado.mechs.get(estado.jugador).potencia_de_fuego.existe) {
-            respuesta = new Punietazos(estado, condiciones);
+            
+            respuesta = new PunietazosYPatada(estado, condiciones);
         }
         return respuesta;
     }
@@ -1567,7 +1568,7 @@ public class SunTzu {
                 respuesta[5] = true;
                 break;
 
-            case Izquierdao:
+            case Izquierda:
                 //Sólo pueden disparar las armas del brazo izquierdo
                 respuesta[0] = true;
                 break;

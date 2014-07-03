@@ -6,16 +6,17 @@ package bt;
 
 import bt.Reglas.Localizacion;
 import static bt.Reglas.tiposAnguloDisparo.Derecho;
-import static bt.Reglas.tiposAnguloDisparo.Izquierdao;
+import static bt.Reglas.tiposAnguloDisparo.Frontal;
+import static bt.Reglas.tiposAnguloDisparo.Izquierda;
 import java.util.ArrayList;
 
 /**
  *
  * @author Víctor
  */
-class Punietazos extends AtaqueFisico {
+class PunietazosYPatada extends AtaqueFisico {
 
-    public Punietazos(EstadoDeJuego estado, Condiciones condiciones) {
+    public PunietazosYPatada(EstadoDeJuego estado, Condiciones condiciones) {
 
         DataMech actual = estado.getMechActual();
 
@@ -43,6 +44,9 @@ class Punietazos extends AtaqueFisico {
             Hexagono h_enemigo = estado.mapa.casilla(p_torso_enemigo.getHexagono());
             Hexagono h_actual = estado.mapa.casilla(p_torso_actual.getHexagono());
 
+            //Calculo altura del enemigo
+
+
             if (Math.abs(h_enemigo.getNivel() - h_actual.getNivel()) < 2) {
 
                 Phexagono objetivo_primario;
@@ -60,11 +64,11 @@ class Punietazos extends AtaqueFisico {
                 DataDefMech datos = estado.datos_def_mechs[estado.jugador];
 
 
-
-
                 //Determinamos las localizaciones válidas en función del ángulo
-                //Sólo podemos pegar con puños si estamos al mismo nivel o por debajo
-                if (h_actual.getNivel() <= h_enemigo.getNivel()) {
+                //Sólo podemos pegar con puños si estamos al mismo nivel (y no está en el suelo) o por debajo
+                if (h_actual.getNivel() < h_enemigo.getNivel()
+                        || (h_actual.getNivel() == h_enemigo.getNivel()
+                        && !enemigo.isEnelsuelo())) {
                     switch (anguloGolpeoSuperior) {
                         case Derecho:
                             //Si el brazo derecho está operativo pegamos con él
@@ -80,10 +84,10 @@ class Punietazos extends AtaqueFisico {
 
 
                             break;
-                        case Izquierdao:
+                        case Izquierda:
                             //Si el brazo izquierdo está operativo pegamos con él
 
-                            if (datos.isConBrazoIzquiero() && datos.isConAntebrazoIzquierdo() && datos.isConHombroIzquierdo()) {
+                            if (datos.isConBrazoIzquierdo() && datos.isConAntebrazoIzquierdo() && datos.isConHombroIzquierdo()) {
 
                                 AtaqueArmaFisica a = new AtaqueArmaFisica();
                                 a.localizacion = Localizacion.BI;
@@ -108,7 +112,7 @@ class Punietazos extends AtaqueFisico {
                                 this.ataques.add(a);
                             }
 
-                            if (datos.isConBrazoIzquiero() && datos.isConAntebrazoIzquierdo() && datos.isConHombroIzquierdo()) {
+                            if (datos.isConBrazoIzquierdo() && datos.isConAntebrazoIzquierdo() && datos.isConHombroIzquierdo()) {
 
                                 AtaqueArmaFisica a = new AtaqueArmaFisica();
                                 a.localizacion = Localizacion.BI;
@@ -122,6 +126,57 @@ class Punietazos extends AtaqueFisico {
                     }
                 }
 
+
+
+                //Podemos pegar patadas sólo si estamos al mismo nivel o uno por encima y está de pie
+                if (h_actual.getNivel() == h_enemigo.getNivel()
+                        || (h_actual.getNivel() > h_enemigo.getNivel()
+                        && !enemigo.isEnelsuelo())) {
+
+                    //Si el enemigo está en el ángulo frontal continuamos
+                    if (anguloGolpeoPiernas == Reglas.tiposAnguloDisparo.Frontal) {
+
+                        //Si tenemos las dos caderas bien
+                        Mech mech = estado.mechs.get(estado.jugador);
+
+                        boolean podemos = true;
+
+                        //Recorrer actuadores y comprobar las dos caderas
+                        DataActuador[] actuadores = mech.datadefmech.getActuadores();
+                        for (DataActuador actuador : actuadores) {
+                            //Si tenemos una cadera
+                            if (actuador.getNombre().contains("Cadera")) {
+                                //Debe estar operativa, sino false
+                                if (!actuador.isOperativo()) {
+                                    podemos = false;
+                                }
+                            }
+                        }
+                        
+                        //Si todas las caderas están operativas podemos dar la patada
+                        if (podemos) {
+
+                            //Si es el ángulo frontal pegamos con la pierna que esté operativa
+                            if (true) {
+
+                                AtaqueArmaFisica a = new AtaqueArmaFisica();
+                                a.localizacion = Localizacion.PD;
+                                a.objetivo = objetivo_primario;
+                                a.slot = 2000;
+                                a.tipoObjetivo = Reglas.TiposObjetivo.Mech;
+                                this.ataques.add(a);
+                            }else {
+
+                                AtaqueArmaFisica a = new AtaqueArmaFisica();
+                                a.localizacion = Localizacion.PI;
+                                a.objetivo = objetivo_primario;
+                                a.slot = 2000;
+                                a.tipoObjetivo = Reglas.TiposObjetivo.Mech;
+                                this.ataques.add(a);
+                            }
+                        }
+                    }
+                }
             } else {
                 System.out.println("Distinto nivel");
             }
