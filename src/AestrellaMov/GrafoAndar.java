@@ -327,6 +327,11 @@ class GrafoAndar implements I_Grafo {
                 if (chequeos > 0) {
                     respuesta.chequeos_de_pilotaje = 1;
                 }
+                
+                //Si la casilla está ardiendo coste imposible
+                if(destino.isFuego()){
+                    respuesta.imposible = true;
+                }
             } else {
                 respuesta.imposible = true;
             }
