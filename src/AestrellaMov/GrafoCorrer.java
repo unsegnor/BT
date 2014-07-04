@@ -165,7 +165,7 @@ class GrafoCorrer implements I_Grafo {
                             case 0:
                                 costeEntrada += 1;
                                 break;
-                                //Cuando corre no puede entrar en hexágonos de más de 0 de profundidad
+                            //Cuando corre no puede entrar en hexágonos de más de 0 de profundidad
                             case 1:
                                 respuesta.imposible = true;
                                 break;
@@ -205,6 +205,11 @@ class GrafoCorrer implements I_Grafo {
                 //Anotamos si hay chequeo
                 if (chequeos > 0) {
                     respuesta.chequeos_de_pilotaje = 1;
+                }
+
+                //Si el destino está ardiendo no se puede pasar
+                if (destino.isFuego()) {
+                    respuesta.imposible = true;
                 }
             } else {
                 respuesta.imposible = true;

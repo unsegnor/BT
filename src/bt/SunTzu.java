@@ -1459,32 +1459,37 @@ public class SunTzu {
         //Para cada una de ellas determinar si se puede o no llegar saltando
         for (Phexagono p : posiciones_cercanas) {
 
-            //Si se puede alcanzar la añadimos a la lista el hexágono con todos sus encaramientos
-            boolean rutaSaltando = PathFinder.buscaRutaSaltando(estado.mapa, posicion_mech.getHexagono(), p, pSaltar);
+            Hexagono hdestino = estado.mapa.casilla(p);
 
-            if (rutaSaltando) {
-                Posicion pos1 = new Posicion(p, 1);
-                Posicion pos2 = new Posicion(p, 2);
-                Posicion pos3 = new Posicion(p, 3);
-                Posicion pos4 = new Posicion(p, 4);
-                Posicion pos5 = new Posicion(p, 5);
-                Posicion pos6 = new Posicion(p, 6);
+            //Si el destino está ardiendo pasamos
+            if (!hdestino.isFuego()) {
 
-                NodoMov n1 = new NodoMov(pos1);
-                NodoMov n2 = new NodoMov(pos2);
-                NodoMov n3 = new NodoMov(pos3);
-                NodoMov n4 = new NodoMov(pos4);
-                NodoMov n5 = new NodoMov(pos5);
-                NodoMov n6 = new NodoMov(pos6);
+                //Si se puede alcanzar la añadimos a la lista el hexágono con todos sus encaramientos
+                boolean rutaSaltando = PathFinder.buscaRutaSaltando(estado.mapa, posicion_mech.getHexagono(), p, pSaltar);
 
-                respuesta.lista.add(n1);
-                respuesta.lista.add(n2);
-                respuesta.lista.add(n3);
-                respuesta.lista.add(n4);
-                respuesta.lista.add(n5);
-                respuesta.lista.add(n6);
+                if (rutaSaltando) {
+                    Posicion pos1 = new Posicion(p, 1);
+                    Posicion pos2 = new Posicion(p, 2);
+                    Posicion pos3 = new Posicion(p, 3);
+                    Posicion pos4 = new Posicion(p, 4);
+                    Posicion pos5 = new Posicion(p, 5);
+                    Posicion pos6 = new Posicion(p, 6);
+
+                    NodoMov n1 = new NodoMov(pos1);
+                    NodoMov n2 = new NodoMov(pos2);
+                    NodoMov n3 = new NodoMov(pos3);
+                    NodoMov n4 = new NodoMov(pos4);
+                    NodoMov n5 = new NodoMov(pos5);
+                    NodoMov n6 = new NodoMov(pos6);
+
+                    respuesta.lista.add(n1);
+                    respuesta.lista.add(n2);
+                    respuesta.lista.add(n3);
+                    respuesta.lista.add(n4);
+                    respuesta.lista.add(n5);
+                    respuesta.lista.add(n6);
+                }
             }
-
         }
 
 
