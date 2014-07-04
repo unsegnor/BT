@@ -32,7 +32,10 @@ class ComparaPosicionesSinArmas implements Comparator<PosEval> {
             respuesta = o1.giros_para_ecarar_enemigo - o2.giros_para_ecarar_enemigo;
         }
         
-        //Si las dos coinciden
+        //Si las dos coinciden buscarle la espalda
+        if(respuesta == 0){
+            respuesta = o2.giros_enemigo_para_encararme - o1.giros_enemigo_para_encararme;
+        }
         
         return respuesta;
     }

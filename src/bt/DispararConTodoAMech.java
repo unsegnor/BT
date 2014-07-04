@@ -17,7 +17,7 @@ class DispararConTodoAMech extends AtaqueArmas {
 
         int calor_actual = actual.getTemperatura();
         int calor_disipado = estado.datos_def_mechs[estado.jugador].getnRadiadores();
-        int calor_maximo = 15 - 3;
+        int calor_maximo = 15 - 5;
         int calor_permitido = calor_maximo + calor_disipado - calor_actual;
 
 
@@ -140,12 +140,12 @@ class DispararConTodoAMech extends AtaqueArmas {
             boolean valida = false;
             //Comprobamos el tipo de arma
             //Si es de balística buscamos su munición
+            boolean encontrada = false;
+            Municion municion = null;
             if (arma.componente.getTipoDeArma().contains("Bal") || arma.componente.getTipoDeArma().contains("Misi")) {
                 //Buscamos la primera munición que se pueda usar con este arma
                 int codArma = arma.componente.getCodigo();
-
-                boolean encontrada = false;
-                Municion municion = null;
+                
                 for (int m = 0; m < municiones.size() && !encontrada; m++) {
                     Municion mu = municiones.get(m);
 
@@ -156,29 +156,30 @@ class DispararConTodoAMech extends AtaqueArmas {
                         mu.componente.setMunicion_cantidad(mu.componente.getMunicion_cantidad() - 1);
                     }
                 }
-
-                if (encontrada) {
-                    disparo.localizacion_municion = SunTzu.traducirLocalizacion(municion.componente.getLocalizacion());
-                    disparo.slot_municion = municion.nslot;
-                    valida = true;
-                } else if (arma.componente.getTipoDeArma().contains("Energ")) {
-                    valida = true;
-                } else {
-                    valida = false;
-                }
-
-
-                //Si es válida
-                if (valida) {
-                    //Si no va a añadir demasiado calor la agregamos
-
-                    if (arma.componente.getCalor() < calor_permitido) {
-                        disparos.add(disparo);
-                        calor_permitido -= arma.componente.getCalor();
-                    }
-                }
-
             }
+            
+            if (encontrada) {
+                disparo.localizacion_municion = SunTzu.traducirLocalizacion(municion.componente.getLocalizacion());
+                disparo.slot_municion = municion.nslot;
+                valida = true;
+            } else if (arma.componente.getTipoDeArma().contains("Energ")) {
+                valida = true;
+            } else {
+                valida = false;
+            }
+
+
+            //Si es válida
+            if (valida) {
+                //Si no va a añadir demasiado calor la agregamos
+
+                if (arma.componente.getCalor() < calor_permitido) {
+                    disparos.add(disparo);
+                    calor_permitido -= arma.componente.getCalor();
+                }
+            }
+
+
         }
 
         //Aquí deberíamos tener los disparos en la lista de disparos

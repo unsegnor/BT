@@ -41,6 +41,8 @@ public class EstadoDeJuego {
     public DataDefMech[] datos_def_mechs;
     //Información completa de los mechs
     public HashMap<Integer, Mech> mechs = new HashMap<Integer, Mech>();
+    //Array para consultar el orden de un jugador
+    int[] orden_jugadores;
 
     public DataMech getMechActual() {
         DataMech respuesta = null;
@@ -70,7 +72,18 @@ public class EstadoDeJuego {
             //Calculamos la potencia de fuego
             mech.potencia_de_fuego = calcularPotenciaDeFuego(mech.datadefmech);
             //Calculamos las posiciones alcanzables
-            mech.posiciones_alcanzables = SunTzu.obtenerPosicionesAlcanzables(mech.datamech, this);
+            //la suya
+            mech.posiciones_alcanzables = new ArrayList<PosicionAccion>();
+            //Posición actual
+            Posicion p_actual = new Posicion(mech.datamech.getColumna(), mech.datamech.getFila(), mech.datamech.getEncaramientoMech());
+            PosicionAccion actual = new PosicionAccion(p_actual, Reglas.tiposDeMovimiento.Inmovil);
+            mech.posiciones_alcanzables.add(actual);
+            //Si aún no ha movido añadimos las futuras
+            int nj_actual = this.jugador;
+            int nj_mech = mech.id;
+            if (this.orden_jugadores[nj_mech] >= this.orden_jugadores[nj_actual]) {
+                mech.posiciones_alcanzables = SunTzu.obtenerPosicionesAlcanzables(mech.datamech, this);
+            }
             //Calcular vida
             mech.vida = calcularVida(mech);
 
@@ -86,6 +99,8 @@ public class EstadoDeJuego {
         if (defmech.getnArmas() == 0) {
             //Si no hay armas no hay potencia de fuego
             respuesta.resumen = 0;
+            respuesta.existe = false;
+            System.out.println("No tiene armas");
         } else {
             //Buscamos posibles parejas (ARMA - MUNICIÓN)
             DataComponente[] componentes = defmech.getComponentesEquipados();
@@ -132,7 +147,7 @@ public class EstadoDeJuego {
                                 }
                                 //Si es válida la añadimos como arma
                                 if (valida) {
-                                    System.out.println("Arma válida " + componente.getNombre());
+                                    System.out.println("Arma válida " + componente.getNombre() + " " + componente.getTipoDeArma());
                                     Arma nueva = new Arma();
                                     nueva.componente = componente;
                                     nueva.nslot = nslot;
@@ -161,11 +176,12 @@ public class EstadoDeJuego {
                 boolean valida = false;
                 //Comprobamos el tipo de arma
                 //Si es de balística buscamos su munición
+                boolean encontrada = false;
                 if (arma.componente.getTipoDeArma().contains("Bal") || arma.componente.getTipoDeArma().contains("Misi")) {
                     //Buscamos la primera munición que se pueda usar con este arma
                     int codArma = arma.componente.getCodigo();
 
-                    boolean encontrada = false;
+
                     Municion municion = null;
                     for (int m = 0; m < municiones.size() && !encontrada; m++) {
                         Municion mu = municiones.get(m);
@@ -177,25 +193,25 @@ public class EstadoDeJuego {
                             mu.componente.setMunicion_cantidad(mu.componente.getMunicion_cantidad() - 1);
                         }
                     }
-
-                    if (encontrada) {
-                        valida = true;
-                    } else if (arma.componente.getTipoDeArma().contains("Energ")) {
-                        valida = true;
-                    } else {
-                        valida = false;
-                    }
-
-
-                    //Si es válida
-                    if (valida) {
-                        respuesta.existe = true;
-                        respuesta.alcanceMaximo = Math.max(respuesta.alcanceMaximo, arma.componente.getDistanciaLarga());
-                        respuesta.danioMaximo += arma.componente.getDamage();
-                        respuesta.minimoAlcanceCorto = Math.min(respuesta.minimoAlcanceCorto, arma.componente.getDistanciaCorta());
-                    }
-
                 }
+                if (encontrada) {
+                    valida = true;
+                } else if (arma.componente.getTipoDeArma().contains("Energ")) {
+                    valida = true;
+                } else {
+                    valida = false;
+                }
+
+
+                //Si es válida
+                if (valida) {
+                    respuesta.existe = true;
+                    respuesta.alcanceMaximo = Math.max(respuesta.alcanceMaximo, arma.componente.getDistanciaLarga());
+                    respuesta.danioMaximo += arma.componente.getDamage();
+                    respuesta.minimoAlcanceCorto = Math.min(respuesta.minimoAlcanceCorto, arma.componente.getDistanciaCorta());
+                }
+
+
             }
         }
 

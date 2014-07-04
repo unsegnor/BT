@@ -326,9 +326,9 @@ public class Cargador {
     public static DataDefMech cargarDefMech(int nJugador, int mech) {
 
         //Cargar archivo de configuración
-        File iniciativafile = new File("defmechJ" + nJugador + "-" + mech + ".sbt");
+        File defmechfile = new File("defmechJ" + nJugador + "-" + mech + ".sbt");
 
-        return leerDefMech(nJugador, mech, iniciativafile); 
+        return leerDefMech(nJugador, mech, defmechfile); 
     }
     public static DataDefMech leerDefMech(int nJugador, int mech, File archivo) {
         FileReader fr = null;

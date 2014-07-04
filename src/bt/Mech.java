@@ -31,11 +31,11 @@ class Mech {
         sb.append("DanioMaximo: ").append(potencia_de_fuego.danioMaximo).append("\n");
         sb.append("AlcanceDevastador: ").append(potencia_de_fuego.minimoAlcanceCorto).append("\n");
 
-        /*
+        
         sb.append("---Posiciones Alcanzables---\n");
         for (PosicionAccion pa : posiciones_alcanzables) {
             sb.append(pa.posicion.toString()).append(",");
-        }*/
+        }
         sb.append("\n------------------------------------------\n");
 
         return sb.toString();

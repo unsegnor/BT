@@ -55,10 +55,6 @@ public class SunTzu {
 
         //Cargamos heurísticas
 
-
-
-
-
         //Comprobar si tenemos o no potencia de fuego
 
         ComparaPosicionesConArmas conArmas = new ComparaPosicionesConArmas();
@@ -110,8 +106,13 @@ public class SunTzu {
     private static Accion responderAMovimiento(EstadoDeJuego estado, Condiciones condiciones) {
         Movimiento respuesta = null;
 
+
+
         if (estado.getMechActual().isEnelsuelo()) {
             Mech mech = estado.mechs.get(estado.jugador);
+
+            System.out.println("Puntos andar: " + mech.datadefmech.getPuntosMovAndando());
+            System.out.println("Puntos correr: " + mech.datadefmech.getPuntosMovCorriendo());
 
             if (mech.datadefmech.getPuntosMovAndando() >= 2) {
                 respuesta = new Levantarse(estado, condiciones);
@@ -297,8 +298,17 @@ public class SunTzu {
 
         //Escribir la iniciativa
         estado.iniciativa = ini.orden;
-
+        
         int njugadores = ini.orden.length;
+        
+        //Escribimos también la iniciativa para consultar el orden del jugador
+        int[] orden_jugador = new int[njugadores];
+        for(int i=0; i<ini.orden.length; i++){
+            int nj = ini.orden[i];
+            orden_jugador[nj] = i; 
+        }
+
+        estado.orden_jugadores = orden_jugador;
 
         //Leer las descripciones de los mechs
         DataDefMech[] dfm = new DataDefMech[njugadores];
