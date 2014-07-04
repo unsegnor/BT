@@ -222,6 +222,11 @@ class GrafoAndar implements I_Grafo {
                 //Lo anotamos en la respuesta
                 respuesta.setPuntos_de_movimiento(costeTotal);
 
+                //Si el destino está ardiendo sumamos dos puntos de calor generado por entrar
+                if (destino.isFuego()) {
+                    respuesta.calor_generado +=2;
+                }
+
                 //Anotamos si hay chequeo
                 if (chequeos > 0) {
                     respuesta.chequeos_de_pilotaje = 1;

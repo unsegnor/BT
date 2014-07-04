@@ -4,6 +4,7 @@
  */
 package bt;
 
+import AestrellaMov.CosteMov;
 import bt.Reglas.TipoRecorrido;
 import bt.Reglas.tiposDeMovimiento;
 
@@ -16,6 +17,7 @@ class PosicionAccion {
     Posicion posicion;
     tiposDeMovimiento tipoMovimiento = tiposDeMovimiento.Indefinido;
     private TipoRecorrido recorrido;
+    CosteMov coste_movimiento;
     
     PosicionAccion (Posicion posicion, tiposDeMovimiento tipo_de_movimiento){
         this.posicion = posicion;

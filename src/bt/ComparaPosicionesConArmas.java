@@ -65,6 +65,7 @@ class ComparaPosicionesConArmas implements Comparator<PosEval> {
         if (respuesta == 0) {
             return o1.distancia_al_enemigo - o2.distancia_al_enemigo;
         }
+        
 
 
         return respuesta;

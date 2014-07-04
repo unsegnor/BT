@@ -21,9 +21,9 @@ public class CosteMov implements I_Coste {
     
     //TODO anotar calor generado???
 
-    CosteMov(){}
+    public CosteMov(){}
     
-    CosteMov(int puntos) {
+    public CosteMov(int puntos) {
         puntos_de_movimiento = puntos;
     }
     
@@ -40,6 +40,9 @@ public class CosteMov implements I_Coste {
         
         //Sumamos también los chequeos de pilotaje
         respuesta.chequeos_de_pilotaje += otro.chequeos_de_pilotaje;
+        
+        //Sumamos también el calor generado
+        respuesta.calor_generado += otro.calor_generado;
         
         //Si alguno de los dos es imposible el resultado también
         if(imposible || otro.imposible){
@@ -69,6 +72,12 @@ public class CosteMov implements I_Coste {
             //Si empatan en puntos de movimiento miramos los chequeos de pilotaje
             if(respuesta == 0){
                 respuesta = this.chequeos_de_pilotaje - otro.chequeos_de_pilotaje;
+                
+                //Si empatan en chequeos de pilotaje comparamos el calor generado
+                if(respuesta == 0){
+                    respuesta = this.calor_generado - otro.calor_generado;
+                }
+                
             }
         }
         

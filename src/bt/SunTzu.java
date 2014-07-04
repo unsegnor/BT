@@ -54,11 +54,9 @@ public class SunTzu {
 
 
         //Cargamos heurísticas
-
-
-
-
-
+        
+        
+        
         //Comprobar si tenemos o no potencia de fuego
 
         ComparaPosicionesConArmas conArmas = new ComparaPosicionesConArmas();
@@ -953,10 +951,12 @@ public class SunTzu {
         for (int i = 0; i < nnodosAndar; i++) {
             NodoMov nodo = (NodoMov) nodos_andando.get(i);
             CosteMov coste = (CosteMov) nodo.getCosteTotal();
-            coste.calor_generado = 1;
+            coste.calor_generado += 1;
             Posicion p = nodo.getPosicion();
             //Añadirla a la lista
-            respuesta.add(new PosicionAccion(p, tiposDeMovimiento.Andar));
+            PosicionAccion pa = new PosicionAccion(p, tiposDeMovimiento.Andar);
+            pa.coste_movimiento = coste;
+            respuesta.add(pa);
         }
 
 
@@ -972,10 +972,12 @@ public class SunTzu {
         for (int i = 0; i < nnodosCorrer; i++) {
             NodoMov nodo = (NodoMov) nodos_corriendo.get(i);
             CosteMov coste = (CosteMov) nodo.getCosteTotal();
-            coste.calor_generado = 2;
+            coste.calor_generado += 2;
             Posicion p = nodo.getPosicion();
             //Añadirla a la lista
-            respuesta.add(new PosicionAccion(p, tiposDeMovimiento.Correr));
+            PosicionAccion pa = new PosicionAccion(p, tiposDeMovimiento.Correr);
+            pa.coste_movimiento = coste;
+            respuesta.add(pa);
         }
 
         //TODO rellenar aquellas alcanzables saltando
@@ -1001,12 +1003,15 @@ public class SunTzu {
                 //Al saltar se genera tanto calor como distancia recorrida con un mínimo de 3
                 int distancia = estado.mapa.distanciaCasillas(posicion_mech.getHexagono(), p.getHexagono());
                 if (distancia <= 3) {
-                    coste.calor_generado = 3;
+                    coste.calor_generado += 3;
                 } else {
-                    coste.calor_generado = distancia;
+                    coste.calor_generado += distancia;
                 }
+                
+                PosicionAccion pa = new PosicionAccion(p, tiposDeMovimiento.Saltar);
+                pa.coste_movimiento = coste;
                 //Añadirla a la lista
-                respuesta.add(new PosicionAccion(p, tiposDeMovimiento.Saltar));
+                respuesta.add(pa);
             }
         }
 
@@ -1082,6 +1087,7 @@ public class SunTzu {
                 //Evaluar la posición
                 PosEval datos_de_posicion = evaluarPosicion(pa.posicion, estado, condiciones);
 //Añadir el calor generado para alcanzar la posición
+                /*
                 switch (pa.tipoMovimiento) {
                     case Inmovil:
                         datos_de_posicion.calor_generado = 0;
@@ -1103,7 +1109,9 @@ public class SunTzu {
                         break;
 
                 }
-
+*/
+                datos_de_posicion.calor_generado = pa.coste_movimiento.calor_generado;
+                
                 if (mejor == null) {
                     mejor = datos_de_posicion;
                 } else {
@@ -1309,6 +1317,7 @@ public class SunTzu {
                 //Evaluar la posición
                 PosEval datos_de_posicion = evaluarPosicion(pa.posicion, estado, condiciones);
                 //Añadir el calor generado para alcanzar la posición
+                /*
                 switch (pa.tipoMovimiento) {
                     case Inmovil:
                         datos_de_posicion.calor_generado = 0;
@@ -1330,7 +1339,10 @@ public class SunTzu {
                         break;
 
                 }
-
+*/
+                
+                datos_de_posicion.calor_generado = pa.coste_movimiento.calor_generado;
+                
                 if (mejor == null) {
                     mejor = datos_de_posicion;
                 } else {
@@ -1639,7 +1651,7 @@ public class SunTzu {
         ArrayList<PosicionAccion> posiciones_alcanzables;
 
         posiciones_alcanzables = obtenerPosicionesAlcanzables(mech_actual, estado);
-
+        
         //Todas las calculadas aquí son de corto recorrido
         for (PosicionAccion pos : posiciones_alcanzables) {
             pos.setRecorrido(Reglas.TipoRecorrido.Corto);
@@ -1650,15 +1662,26 @@ public class SunTzu {
         //Obtenemos las casillas cercanas al enemigo con un radio de 6, por ejemplo
         ArrayList<Phexagono> cercanas_al_enemigo = estado.mapa.cercanas(p_enemigo.getHexagono(), 6);
 
+        Posicion p_actual = new Posicion(mech_actual.getColumna(), mech_actual.getFila(), mech_actual.getEncaramientoMech());
+        
         //Para cada una de ellas añadimos una posicionAcción por cada posición que tiene y por cada forma de llegar hasta ella
         for (Phexagono hex : cercanas_al_enemigo) {
 
             //Para cada cara
             for (int cara = 1; cara <= 6; cara++) {
                 Posicion p = new Posicion(hex, cara);
+                
+                //Calculamos la ruta hasta la pozición destino
+                Aestrella.Resultado ra = AestrellaMov.AstrellaMov.calcularRutaAndando(p_actual, p, estado);
                 PosicionAccion pa = new PosicionAccion(p, Andar);
+                pa.coste_movimiento = (CosteMov) ra.getCoste();
+                pa.coste_movimiento.calor_generado +=1; //Sumamos uno de calor por andar
                 pa.setRecorrido(Reglas.TipoRecorrido.Largo);
+                
+                Aestrella.Resultado rc = AestrellaMov.AstrellaMov.calcularRutaCorriendo(p_actual, p, estado);
                 PosicionAccion pc = new PosicionAccion(p, Correr);
+                pc.coste_movimiento = (CosteMov) rc.getCoste();
+                pc.coste_movimiento.calor_generado +=2; //Sumamos dos de calor por correr
                 pc.setRecorrido(Reglas.TipoRecorrido.Largo);
 
                 //Y lo añadimos a la lista
@@ -1667,7 +1690,7 @@ public class SunTzu {
             }
         }
 
-        Posicion p_actual = new Posicion(mech_actual.getColumna(), mech_actual.getFila(), mech_actual.getEncaramientoMech());
+        
 
         /*
          System.out.println("Posiciones a evaluar:");
@@ -1694,6 +1717,7 @@ public class SunTzu {
                 //Evaluar la posición
                 PosEval datos_de_posicion = evaluarPosicion(pa.posicion, estado, condiciones);
                 //Añadir el calor generado para alcanzar la posición
+                /*
                 switch (pa.tipoMovimiento) {
                     case Inmovil:
                         datos_de_posicion.calor_generado = 0;
@@ -1715,7 +1739,10 @@ public class SunTzu {
                         break;
 
                 }
-
+*/      
+                //Pasamos el calor que nos ha dicho el A* que tenemos que generar para llegar
+                datos_de_posicion.calor_generado = pa.coste_movimiento.calor_generado;
+                
                 if (mejor == null) {
                     boolean existeRuta = true;
                     //Si la posición es de largo recorrido tenemos que comprobar que sea alcanzable
