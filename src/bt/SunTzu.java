@@ -298,14 +298,14 @@ public class SunTzu {
 
         //Escribir la iniciativa
         estado.iniciativa = ini.orden;
-        
+
         int njugadores = ini.orden.length;
-        
+
         //Escribimos también la iniciativa para consultar el orden del jugador
         int[] orden_jugador = new int[njugadores];
-        for(int i=0; i<ini.orden.length; i++){
+        for (int i = 0; i < ini.orden.length; i++) {
             int nj = ini.orden[i];
-            orden_jugador[nj] = i; 
+            orden_jugador[nj] = i;
         }
 
         estado.orden_jugadores = orden_jugador;
@@ -820,74 +820,118 @@ public class SunTzu {
     private static PosEval evaluarPosicion(Posicion posicion, EstadoDeJuego estado, Condiciones condiciones) {
         //Tenemos que rellenar el PosEval
         PosEval respuesta = new PosEval();
+        /*
+         //TODO de momento seleccionamos el enemigo como el mech más cercano operativo que no somos nosotros
+         //O aquel al que más daño podemos hacer...
 
-        //TODO de momento seleccionamos el enemigo como el mech más cercano operativo que no somos nosotros
-        //O aquel al que más daño podemos hacer...
+         //Calcular el calor generado para llegar aquí?
 
-        //Calcular el calor generado para llegar aquí?
+         Posicion p_enemigo;
 
-        Posicion p_enemigo;
+         //Así que obtenemos todos los mechs operativos distintos de nosotros, sus posiciones y las distancias hasta ellos
+         ArrayList<DataMech> enemigos_operativos = new ArrayList<DataMech>();
+         DataMech mech_actual = null;
 
-        //Así que obtenemos todos los mechs operativos distintos de nosotros, sus posiciones y las distancias hasta ellos
-        ArrayList<DataMech> enemigos_operativos = new ArrayList<DataMech>();
-        DataMech mech_actual = null;
+         DataMech[] mechs = estado.datos_mechs.getMechs();
+         Mapa mapa = estado.mapa;
 
-        DataMech[] mechs = estado.datos_mechs.getMechs();
-        Mapa mapa = estado.mapa;
+         for (DataMech mech : mechs) {
+         if (mech.getnJugador() == estado.jugador) {
+         mech_actual = mech;
+         } else {
+         if (mech.isOperativo()) {
+         enemigos_operativos.add(mech);
+         //Obtener la posición
+         Posicion p = new Posicion(mech.getColumna(), mech.getFila(), mech.getEncaramientoMech());
+         }
+         }
+         }
 
-        for (DataMech mech : mechs) {
-            if (mech.getnJugador() == estado.jugador) {
-                mech_actual = mech;
-            } else {
-                if (mech.isOperativo()) {
-                    enemigos_operativos.add(mech);
-                    //Obtener la posición
-                    Posicion p = new Posicion(mech.getColumna(), mech.getFila(), mech.getEncaramientoMech());
-                }
-            }
-        }
+         DataMech enemigo = enemigos_operativos.get(0);
+         p_enemigo = new Posicion(enemigo.getColumna(), enemigo.getFila(), enemigo.getEncaramientoMech());
 
-        DataMech enemigo = enemigos_operativos.get(0);
-        p_enemigo = new Posicion(enemigo.getColumna(), enemigo.getFila(), enemigo.getEncaramientoMech());
+         DataMech actual = mech_actual;
 
-        DataMech actual = mech_actual;
+         //Si el enemigo ya ha movido evaluamos con su posición y encaramiento
+         boolean hamovido = false;
 
-        //Si el enemigo ya ha movido evaluamos con su posición y encaramiento
-        boolean hamovido = false;
+         int nj = enemigo.getnJugador(); //Número de jugador del enemigo
 
-        int nj = enemigo.getnJugador(); //Número de jugador del enemigo
+         if (turno(estado, nj) < turno(estado, estado.jugador)) {
+         hamovido = true;
+         }
+         */
 
-        if (turno(estado, nj) < turno(estado, estado.jugador)) {
-            hamovido = true;
-        }
+        //Mech mech_actual = estado.mechs.get(estado.jugador);
 
-        if (true) {//hamovido) {
-            respuesta = evaluarPosicionRelativa(mapa, posicion, p_enemigo);
+        PosEval peor = null;
+
+        //Si tenemos una actitud ofensiva vamos a saco a por el más cercano
+        if (estado.mechs.get(estado.jugador).vida.resumen >= 100) {
+            DataMech enemigo_cercano = getEnemigoMasCercano(estado);
+
+            Posicion p_cercano = new Posicion(enemigo_cercano.getColumna(), enemigo_cercano.getFila(), enemigo_cercano.getEncaramientoMech());
+
+            peor = evaluarPosicionRelativa(estado.mapa, posicion, p_cercano);
         } else {
-            //Si aún no ha movido entonces tenemos que evaluar todas las posiciones a las que puede llegar el enemigo y quedarnos con la peor para nosotros
-            ArrayList<PosicionAccion> posiciones_alcanzables = obtenerPosicionesAlcanzables(enemigo, estado);
 
-            PosEval peor = null;
+            //Comparamos nuestra posición con todas las de los enemigos
+            for (Map.Entry<Integer, Mech> entrada : estado.mechs.entrySet()) {
+                //Y nos quedamos con la que peor nos va
+                //Suponemos que el enemigo va a ser listo
+                Mech mech_enemigo = entrada.getValue();
 
-            //Ahora evaluamos nuestra posición en relación a todas las alcanzables por el enemigo y nos quedamos con la peor
-            for (PosicionAccion pene : posiciones_alcanzables) {
-                PosEval eval = evaluarPosicionRelativa(mapa, posicion, pene.posicion);
+                //Si somos nosotros pasamos
+                if (mech_enemigo.id != estado.jugador) {
 
-                if (peor == null) {
-                    peor = eval;
-                } else {
-                    //Comparamos la posición con la peor
-                    if (condiciones.comparador_de_posiciones.compare(eval, peor) > 0) {
-                        //Si la posición que estamos evaluando para nsotros es peor respecto a otra del enemigo, contamos esa evaluación
-                        peor = eval;
+                    //Recorremos sus posiciones alcanzables evaluando con la nuestra y nos quedamos con la peor
+                    //Si el enemigo ya ha movido sólo estará su posición actual como alcanzable
+                    ArrayList<PosicionAccion> posiciones_alcanzables = mech_enemigo.posiciones_alcanzables;
+
+                    for (PosicionAccion pos : posiciones_alcanzables) {
+                        PosEval eval = evaluarPosicionRelativa(estado.mapa, posicion, pos.posicion);
+
+                        //Si es mejor que la mejor o no hay mejor la sustituimos
+                        if (peor == null || condiciones.comparador_de_posiciones.compare(peor, eval) < 0) {
+                            peor = eval;
+                        }
                     }
+
                 }
-
             }
-
-            //Devolvemos la peor que hayamos encontrado
-            respuesta = peor;
         }
+        /*
+         if (true) {//hamovido) {
+         respuesta = evaluarPosicionRelativa(mapa, posicion, p_enemigo);
+         } else {
+         //Si aún no ha movido entonces tenemos que evaluar todas las posiciones a las que puede llegar el enemigo y quedarnos con la peor para nosotros
+         ArrayList<PosicionAccion> posiciones_alcanzables = obtenerPosicionesAlcanzables(enemigo, estado);
+
+         PosEval peor = null;
+
+         //Ahora evaluamos nuestra posición en relación a todas las alcanzables por el enemigo y nos quedamos con la peor
+         for (PosicionAccion pene : posiciones_alcanzables) {
+         PosEval eval = evaluarPosicionRelativa(mapa, posicion, pene.posicion);
+
+         if (peor == null) {
+         peor = eval;
+         } else {
+         //Comparamos la posición con la peor
+         if (condiciones.comparador_de_posiciones.compare(eval, peor) > 0) {
+         //Si la posición que estamos evaluando para nsotros es peor respecto a otra del enemigo, contamos esa evaluación
+         peor = eval;
+         }
+         }
+
+         }
+
+         //Devolvemos la peor que hayamos encontrado
+         respuesta = peor;
+         }
+
+         */
+
+        respuesta = peor;
 
         return respuesta;
     }
@@ -1662,23 +1706,28 @@ public class SunTzu {
 
         //Añadimos ahora las de largo recorrido
 
-        //Obtenemos las casillas cercanas al enemigo con un radio de 6, por ejemplo
-        ArrayList<Phexagono> cercanas_al_enemigo = estado.mapa.cercanas(p_enemigo.getHexagono(), 6);
+        //Si tengo una actitud ofensiva tengo en cuenta el largo recorrido, sino no
+        if (estado.mechs.get(estado.jugador).vida.resumen >= 100) {
 
-        //Para cada una de ellas añadimos una posicionAcción por cada posición que tiene y por cada forma de llegar hasta ella
-        for (Phexagono hex : cercanas_al_enemigo) {
+            //Obtenemos las casillas cercanas al enemigo con un radio de 6, por ejemplo
+            ArrayList<Phexagono> cercanas_al_enemigo = estado.mapa.cercanas(p_enemigo.getHexagono(), 6);
 
-            //Para cada cara
-            for (int cara = 1; cara <= 6; cara++) {
-                Posicion p = new Posicion(hex, cara);
-                PosicionAccion pa = new PosicionAccion(p, Andar);
-                pa.setRecorrido(Reglas.TipoRecorrido.Largo);
-                PosicionAccion pc = new PosicionAccion(p, Correr);
-                pc.setRecorrido(Reglas.TipoRecorrido.Largo);
+            //Para cada una de ellas añadimos una posicionAcción por cada posición que tiene y por cada forma de llegar hasta ella
 
-                //Y lo añadimos a la lista
-                posiciones_alcanzables.add(pa);
-                posiciones_alcanzables.add(pc);
+            for (Phexagono hex : cercanas_al_enemigo) {
+
+                //Para cada cara
+                for (int cara = 1; cara <= 6; cara++) {
+                    Posicion p = new Posicion(hex, cara);
+                    PosicionAccion pa = new PosicionAccion(p, Andar);
+                    pa.setRecorrido(Reglas.TipoRecorrido.Largo);
+                    PosicionAccion pc = new PosicionAccion(p, Correr);
+                    pc.setRecorrido(Reglas.TipoRecorrido.Largo);
+
+                    //Y lo añadimos a la lista
+                    posiciones_alcanzables.add(pa);
+                    posiciones_alcanzables.add(pc);
+                }
             }
         }
 
