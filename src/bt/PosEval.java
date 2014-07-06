@@ -26,6 +26,9 @@ class PosEval implements I_Eval {
     int calor_generado = 0;
     
     int[] flancos_seguros = new int[6];
+    Mech enemigo;
+    Mech actual;
+    Posicion posicion;
     
     
     

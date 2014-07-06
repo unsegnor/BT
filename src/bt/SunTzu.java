@@ -66,9 +66,10 @@ public class SunTzu {
         }
 
 
+        Mech actual = estado.mechs.get(estado.jugador);
 
 
-        if (estado.datos_def_mechs[jugador].getnArmas() == 0) {
+        if (!actual.potencia_de_fuego.existe) {
             condiciones.comparador_de_posiciones = sinArmas;
             condiciones.armas = false;
         } else {
@@ -114,7 +115,7 @@ public class SunTzu {
             System.out.println("Puntos andar: " + mech.datadefmech.getPuntosMovAndando());
             System.out.println("Puntos correr: " + mech.datadefmech.getPuntosMovCorriendo());
 
-            if (mech.datadefmech.getPuntosMovAndando() >= 2) {
+            if (mech.datamech.getInformacion_adicional().getPuntos_andar() >= 2) {
                 respuesta = new Levantarse(estado, condiciones);
             } else {
                 respuesta = new NoMoverse();
@@ -720,22 +721,29 @@ public class SunTzu {
     private static Accion responderAAtaqueArmas(EstadoDeJuego estado, Condiciones condiciones) {
         Accion respuesta = null;
 
-        //Detectar al enemigo más cercano con LDV
-        DataMech actual = estado.getMechActual();
-        DataMech enemigo;
+        if (estado.getMechActual().isEnelsuelo()) {
 
-        Par<DataMech, ResultadoLDV> r = SunTzu.getEnemigoMasCercanoConLDV(estado);
-        enemigo = r.primero;
-        ResultadoLDV rLDV = r.segundo;
-
-        //Si tenemos enemigo seguimos
-        //Si tenemos un enemigo cercano con LDV entonces le disparamos con todo
-        if (enemigo != null) {
-            respuesta = new DispararConTodoAMech(enemigo, rLDV, estado);
-        } else {
+            //Si estamos en el suelo nada
             respuesta = new NoDisparar();
-        }
 
+        } else {
+
+            //Detectar al enemigo más cercano con LDV
+            DataMech actual = estado.getMechActual();
+            DataMech enemigo;
+
+            Par<DataMech, ResultadoLDV> r = SunTzu.getEnemigoMasCercanoConLDV(estado);
+            enemigo = r.primero;
+            ResultadoLDV rLDV = r.segundo;
+
+            //Si tenemos enemigo seguimos
+            //Si tenemos un enemigo cercano con LDV entonces le disparamos con todo
+            if (enemigo != null) {
+                respuesta = new DispararConTodoAMech(enemigo, rLDV, estado);
+            } else {
+                respuesta = new NoDisparar();
+            }
+        }
         return respuesta;
     }
 
@@ -804,10 +812,18 @@ public class SunTzu {
     private static Accion responderAAtaqueFisico(EstadoDeJuego estado, Condiciones condiciones) {
         Accion respuesta = new NoAtacar();
 
-        //Si no tengo potencia de fuego pruebo a dar puñetazos
-        if (!estado.mechs.get(estado.jugador).potencia_de_fuego.existe) {
+        if (estado.getMechActual().isEnelsuelo()) {
 
-            respuesta = new PunietazosYPatada(estado, condiciones);
+            //Si estamos en el suelo nada
+            respuesta = new NoAtacar();
+
+        } else {
+
+            //Si no tengo potencia de fuego pruebo a dar puñetazos
+            if (!estado.mechs.get(estado.jugador).potencia_de_fuego.existe) {
+
+                respuesta = new PunietazosYPatada(estado, condiciones);
+            }
         }
         return respuesta;
     }
@@ -866,9 +882,13 @@ public class SunTzu {
 
         PosEval peor = null;
 
+        DataMech enemigo_cercano = getEnemigoMasCercano(estado);
+        Mech enemigo = estado.mechs.get(enemigo_cercano.getnJugador());
+
+
         //Si tenemos una actitud ofensiva vamos a saco a por el más cercano
         if (estado.mechs.get(estado.jugador).vida.resumen >= 100) {
-            DataMech enemigo_cercano = getEnemigoMasCercano(estado);
+
 
             Posicion p_cercano = new Posicion(enemigo_cercano.getColumna(), enemigo_cercano.getFila(), enemigo_cercano.getEncaramientoMech());
 
@@ -890,6 +910,13 @@ public class SunTzu {
 
                     for (PosicionAccion pos : posiciones_alcanzables) {
                         PosEval eval = evaluarPosicionRelativa(estado.mapa, posicion, pos.posicion);
+
+                        if (eval != null) {
+                            //Guardamos a nuestro mech, el enemigo y la posición
+                            eval.enemigo = enemigo;
+                            eval.actual = estado.mechs.get(estado.jugador);
+                            eval.posicion = posicion;
+                        }
 
                         //Si es mejor que la mejor o no hay mejor la sustituimos
                         if (peor == null || condiciones.comparador_de_posiciones.compare(peor, eval) < 0) {
@@ -930,6 +957,11 @@ public class SunTzu {
          }
 
          */
+
+        //Guardamos a nuestro mech, el enemigo y la posición
+        peor.enemigo = enemigo;
+        peor.actual = estado.mechs.get(estado.jugador);
+        peor.posicion = posicion;
 
         respuesta = peor;
 
@@ -1575,8 +1607,14 @@ public class SunTzu {
                     //Obtener su posición
                     Posicion p = new Posicion(mech.getColumna(), mech.getFila(), mech.getEncaramientoMech());
 
+                    //Comprobar si el objetivo está en el suelo
+                    int nivel = 1;
+                    if (mech.isEnelsuelo()) {
+                        nivel = 0;
+                    }
+
                     //Comprobar si tenemos LDv con él
-                    ResultadoLDV rLDV = LDV.calcularLDV(estado.mapa, posicion_mech.getHexagono(), 1, p.getHexagono(), 1);
+                    ResultadoLDV rLDV = LDV.calcularLDV(estado.mapa, posicion_mech.getHexagono(), 1, p.getHexagono(), nivel);
 
                     //Si tenemos LDV entonces
                     if (rLDV.LDV) {

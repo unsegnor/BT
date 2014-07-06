@@ -100,7 +100,7 @@ public class EstadoDeJuego {
             //Si no hay armas no hay potencia de fuego
             respuesta.resumen = 0;
             respuesta.existe = false;
-            System.out.println("No tiene armas");
+            //System.out.println("No tiene armas");
         } else {
             //Buscamos posibles parejas (ARMA - MUNICIÓN)
             DataComponente[] componentes = defmech.getComponentesEquipados();
@@ -147,7 +147,7 @@ public class EstadoDeJuego {
                                 }
                                 //Si es válida la añadimos como arma
                                 if (valida) {
-                                    System.out.println("Arma válida " + componente.getNombre() + " " + componente.getTipoDeArma());
+                                    //System.out.println("Arma válida " + componente.getNombre() + " " + componente.getTipoDeArma());
                                     Arma nueva = new Arma();
                                     nueva.componente = componente;
                                     nueva.nslot = nslot;

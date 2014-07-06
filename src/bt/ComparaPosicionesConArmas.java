@@ -29,6 +29,7 @@ class ComparaPosicionesConArmas implements Comparator<PosEval> {
         } else if (!noencarable(o1) && noencarable(o2)) {
             respuesta = 1;
         }
+        
 
         if (respuesta == 0) {
             //Después que nosotros lo podamos encarar
@@ -72,7 +73,7 @@ class ComparaPosicionesConArmas implements Comparator<PosEval> {
 
     private boolean noencarable(PosEval o1) {
         //Somos no encarables si el enemigo tiene que hacer más de 1 giro para apuntarnos
-        return o1.giros_enemigo_para_encararme > 1;
+        return o1.giros_enemigo_para_encararme > 2;
     }
 
     private boolean disparoventaja(PosEval o1) {
